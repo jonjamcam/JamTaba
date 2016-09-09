@@ -100,8 +100,8 @@ void JamRoomViewPanel::updateMap()
                     continue; // skip invalid locations
 
                 QPointF latLong(userLocation.getLatitude(), userLocation.getLongitude());
-                QPixmap flag(":/flags/flags/" + userLocation.getCountryCode().toLower() + ".png");
-                MapMarker marker(user.getName(), userLocation.getCountryName(), latLong, flag.toImage());
+                //QPixmap flag(":/flags/flags/" + userLocation.getCountryCode().toLower() + ".png");
+                MapMarker marker(user.getName(), userLocation.getCountryName(), latLong);
                 newMarkers.append(marker);
             }
         }

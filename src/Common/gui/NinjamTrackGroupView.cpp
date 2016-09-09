@@ -46,8 +46,8 @@ NinjamTrackGroupView::NinjamTrackGroupView(Controller::MainController *mainContr
     countryLabel->setTextFormat(Qt::RichText);
     countryLabel->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum));
     updateGeoLocation();
-    topPanelLayout->addWidget(countryLabel);
-    topPanelLayout->setAlignment(countryLabel, Qt::AlignTop);
+    //topPanelLayout->addWidget(countryLabel);
+    topPanelLayout->setAlignment(Qt::AlignCenter);
 
     // create the first subchannel by default
     NinjamTrackView *newTrackView = addTrackView(trackID);

@@ -10,7 +10,7 @@ class MapMarker
 {
 
 public:
-    MapMarker(const QString &name, const QString &countryName, const QPointF &latLong, const QImage &flag);
+    MapMarker(const QString &name, const QString &countryName, const QPointF &latLong);
     inline QPointF getLatLong() const { return latLong; }
     QString getText() const;
     inline const QImage &getFlag() const { return flag; }

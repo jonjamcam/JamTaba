@@ -16,8 +16,8 @@
 const QColor BaseTrackView::DB_TEXT_COLOR = QColor(0, 0, 0, 120);
 const int BaseTrackView::FADER_HEIGHT = 12;
 
-const int BaseTrackView::NARROW_WIDTH = 85;
-const int BaseTrackView::WIDE_WIDTH = 120;
+const int BaseTrackView::NARROW_WIDTH = 65;
+const int BaseTrackView::WIDE_WIDTH = 105;
 
 QMap<long, BaseTrackView *> BaseTrackView::trackViews;// static map to quick lookup the views
 
