@@ -61,7 +61,7 @@ LocalTrackView #inputSelectionButton            /* Button used to open the input
 
 LocalTrackView #midiToolsButton                 /* The button used to open MidiToolsDialog */
 {
-    font-size: 10px;
+    font-size: 8px;
     background-repeat: none;
     background-position: center left;
     padding: 0px;
