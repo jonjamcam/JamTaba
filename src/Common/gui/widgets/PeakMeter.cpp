@@ -216,8 +216,8 @@ void AudioMeter::paintPeaksOnly()
 
 void AudioMeter::paintPeaksAndRms()
 {
-    paintingRMS = true;
-    paintingPeaks = true;
+    paintingRMS = false;
+    paintingPeaks = false;
 }
 
 bool AudioMeter::isPaintingPeaksOnly()

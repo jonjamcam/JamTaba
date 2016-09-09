@@ -35,6 +35,7 @@ void MainWindowStandalone::setupShortcuts()
     ui.actionPrivate_Server->setShortcut(QKeySequence(Qt::Key_F2));
     ui.actionShowRmsOnly->setShortcut(QKeySequence(Qt::Key_F3));
     ui.actionShowPeaksOnly->setShortcut(QKeySequence(Qt::Key_F4));
+    ui.actionShowPeakAndRMS->setShortcut(QKeySequence(Qt::Key_F12));
     ui.actionQuit->setShortcut(QKeySequence(Qt::Key_Escape));
     ui.actionFullscreenMode->setShortcut(QKeySequence(Qt::Key_F11));
 }
