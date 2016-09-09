@@ -25,7 +25,7 @@ ChatMessagePanel::ChatMessagePanel(QWidget *parent, const QString &userName, con
 {
     ui->setupUi(this);
     initialize(userName, msg, userNameBackgroundColor, textColor, showTranslationButton, showBlockButton);
-    connect(ui->blockButton, SIGNAL(clicked(bool)), this, SLOT(fireBlockingUserSignal()));
+    //connect(ui->blockButton, SIGNAL(clicked(bool)), this, SLOT(fireBlockingUserSignal()));
 }
 
 void ChatMessagePanel::focusInEvent(QFocusEvent *ev)
@@ -61,7 +61,7 @@ void ChatMessagePanel::initialize(const QString &userName, const QString &msg,
 
     ui->translateButton->setVisible(showTranslationButton);
 
-    ui->blockButton->setVisible(showBlockButton);
+    //ui->blockButton->setVisible(showBlockButton);
 
     this->originalText = msg;
 }
