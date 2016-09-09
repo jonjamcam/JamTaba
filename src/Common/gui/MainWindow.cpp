@@ -48,7 +48,7 @@ MainWindow::MainWindow(Controller::MainController *mainController, QWidget *pare
 
     ui.setupUi(this);
 
-    setWindowTitle("JamTaba " + QApplication::applicationVersion());
+    setWindowTitle("JamTaba " + QApplication::applicationVersion() + " (No Frontiers)");
 
     initializeLoginService();
     initializeMainTabWidget();
