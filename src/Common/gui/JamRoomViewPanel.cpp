@@ -171,7 +171,7 @@ bool JamRoomViewPanel::userInfoLessThan(const Login::UserInfo &u1, const Login::
 
 void JamRoomViewPanel::addPeak(float peak)
 {
-    //ui->wavePeakPanel->addPeak(peak);
+    ui->wavePeakPanel->addPeak(peak);
 }
 
 void JamRoomViewPanel::setShowBufferingState(bool showBuffering)
@@ -227,7 +227,7 @@ void JamRoomViewPanel::clear(bool resetListenButton)
     updateButtonListen();
     updateStyleSheet();
 
-    map->setMarkersVisibility(!ui->buttonListen->isChecked());
+    map->setMarkersVisibility(true);
 }
 
 void JamRoomViewPanel::toggleRoomListening()
@@ -240,7 +240,7 @@ void JamRoomViewPanel::toggleRoomListening()
 
     ui->wavePeakPanel->setEnabled(listening);
     ui->wavePeakPanel->updateGeometry();
-    map->setMarkersVisibility(!listening);
+    map->setMarkersVisibility(true);
 }
 
 void JamRoomViewPanel::enterInTheRoom()
