@@ -221,7 +221,7 @@ void NinjamTrackView::setEstimatedChunksPerInterval(int estimatedChunks)
 void NinjamTrackView::setDownloadedChunksDisplayVisibility(bool visible)
 {
     chunksDisplay->reset();
-    chunksDisplay->setVisible(visible);
+    //chunksDisplay->setVisible(visible);
 }
 
 void NinjamTrackView::setChannelName(const QString &name)
