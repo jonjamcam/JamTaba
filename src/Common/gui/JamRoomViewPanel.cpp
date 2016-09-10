@@ -171,7 +171,7 @@ bool JamRoomViewPanel::userInfoLessThan(const Login::UserInfo &u1, const Login::
 
 void JamRoomViewPanel::addPeak(float peak)
 {
-    ui->wavePeakPanel->addPeak(peak);
+    //ui->wavePeakPanel->addPeak(peak);
 }
 
 void JamRoomViewPanel::setShowBufferingState(bool showBuffering)
