@@ -438,7 +438,7 @@ void MainWindowStandalone::restartAudioAndMidi()
     Q_ASSERT(audioDriver);
 
     midiDriver->start(controller->getSettings().getMidiInputDevicesStatus(),
-                      controller->getSettings().getSyncOutputDevicesStatus());
+                          controller->getSettings().getSyncOutputDevicesStatus());
     audioDriver->start();
 }
 
@@ -502,9 +502,9 @@ void MainWindowStandalone::refreshTrackInputSelection(int inputTrackIndex)
         channel->refreshInputSelectionName(inputTrackIndex);
 }
 
-void MainWindowStandalone::addChannelsGroup(int instrumentIndex)
+void MainWindowStandalone::addChannelsGroup(const QString &groupName)
 {
-    MainWindow::addChannelsGroup(instrumentIndex);
+    MainWindow::addChannelsGroup(groupName);
     controller->updateInputTracksRange();
 }
 

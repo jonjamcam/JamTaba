@@ -787,6 +787,12 @@ void NinjamRoomWindow::setVideoInterval(const User &user, const QByteArray &enco
     auto group = trackGroups[user.getFullName()];
     if (group) {
         group->addVideoInterval(encodedVideoData);
+        if (mainController->isMultiTrackRecordingActivated())
+        {
+            auto geoLocation = mainController->getGeoLocation(user.getIp());
+            QString userName = user.getName() + " from " + geoLocation.getCountryName();
+            mainController->saveEncodedVideo(userName, encodedVideoData); //recording remote video streams
+        }
     }
 }
 

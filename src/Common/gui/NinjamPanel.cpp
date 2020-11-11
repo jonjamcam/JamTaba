@@ -147,6 +147,7 @@ void NinjamPanel::setupSignals()
     connect(ui->comboBpm, SIGNAL(activated(QString)), this, SLOT(handleBpmComboActication(QString)));
 
     connect(ui->checkboxSync, SIGNAL(clicked(bool)), this, SIGNAL(midiSyncChanged(bool)));
+
 }
 
 void NinjamPanel::handleBpiComboActication(const QString &newBpi)

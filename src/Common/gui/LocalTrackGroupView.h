@@ -61,6 +61,8 @@ protected:
 
     virtual void populateMenu(QMenu &menu);
 
+    void refreshStyleSheet() override;
+
     static const int MAX_SUB_CHANNELS = 2;
 
     MainWindow *mainWindow;
@@ -95,7 +97,7 @@ private:
     static QString getStripedPresetName(const QString &presetName);
 
 signals:
-    void instrumentIconChanged();
+    void nameChanged();
     void trackRemoved();
     void trackAdded();
     void presetLoaded();

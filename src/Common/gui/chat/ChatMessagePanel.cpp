@@ -47,6 +47,7 @@ bool ChatMessagePanel::event(QEvent *e)
 {
     if (e->type() == QEvent::Polish) {
         originalMessageFont = ChatMessagePanel::getFontDetails(ui->labelMessage->font());
+        originalTimestampFont = ChatMessagePanel::getFontDetails(ui->labelTimeStamp->font());
         originalAuthorFont = ChatMessagePanel::getFontDetails(ui->labelUserName->font());
     }
 
@@ -80,6 +81,7 @@ void ChatMessagePanel::setFontSizeOffset(qint8 sizeOffset)
     ensurePolished(); // compute original fonts size and unit (px or pt)
 
     ui->labelMessage->setStyleSheet(buildFontStyleSheet(originalMessageFont, sizeOffset));
+    ui->labelTimeStamp->setStyleSheet(buildFontStyleSheet(originalTimestampFont, sizeOffset));
     ui->labelUserName->setStyleSheet(buildFontStyleSheet(originalAuthorFont, sizeOffset));
 }
 
@@ -224,6 +226,8 @@ void ChatMessagePanel::initialize(const QString &userFullName, const QString &ms
         ui->labelUserName->setVisible(false);
     }
 
+    ui->labelTimeStamp->setText(QTime::currentTime().toString("hh:mm"));
+
     ui->translateButton->setVisible(showTranslationButton);
 
     ui->blockButton->setVisible(showBlockButton);
@@ -231,6 +235,7 @@ void ChatMessagePanel::initialize(const QString &userFullName, const QString &ms
     setMessageLabelText(emojifiedText);
 
     originalText = msg;
+
 }
 
 bool linkIsImage(const QString &link)

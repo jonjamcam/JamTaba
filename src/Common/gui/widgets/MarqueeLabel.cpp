@@ -50,7 +50,7 @@ void MarqueeLabel::setFont(const QFont &font)
 bool MarqueeLabel::needAnimation() const
 {
     int textLength = getTextLenght();
-    return textLength > width() && !hasSelectedText();
+    return textLength > width() * 1000 && !hasSelectedText();
 }
 
 int MarqueeLabel::getTextLenght() const

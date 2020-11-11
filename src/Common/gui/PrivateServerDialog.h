@@ -24,6 +24,7 @@ public:
 
 public slots:
     void accept() override;
+    void dataProcess();
 
 signals:
     void connectionAccepted(const QString &server, int serverPort, const QString &userName, const QString &password);
@@ -31,6 +32,8 @@ signals:
 private:
     Ui::PrivateServerDialog *ui;
     controller::MainController *mainController;
+    QNetworkAccessManager *man;
+    QNetworkReply *reply;
 
     void buildComboBoxItems();
 };

@@ -1,4 +1,5 @@
 #include "NinjamTrackGroupView.h"
+#include "geo/IpToLocationResolver.h"
 #include "MainController.h"
 #include "NinjamController.h"
 #include "video/FFMpegDemuxer.h"
@@ -35,16 +36,19 @@ NinjamTrackGroupView::NinjamTrackGroupView(MainController *mainController, long 
     topPanelLayout->setContentsMargins(0, 0, 0, 0);
     topPanelLayout->setSpacing(3);
 
-    userNameLabel = new MarqueeLabel();
-    userNameLabel->setObjectName("groupNameField");
-    userNameLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    // replace the original QLineEdit with a MarqueeLabel
+    topPanelLayout->removeWidget(groupNameField);
+    delete groupNameField;
+    groupNameLabel = new MarqueeLabel();
+    groupNameLabel->setObjectName("groupNameField");
+    groupNameLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
     QHBoxLayout *groupNameLayout = new QHBoxLayout();
-    groupNameLayout->addWidget(userNameLabel, 1);
+    groupNameLayout->addWidget(groupNameLabel, 1);
     chatBlockIconLabel = new QLabel(this);
     chatBlockIconLabel->setPixmap(QPixmap(":/images/chat_blocked.png"));
 
-    setUserName(initialValues.getUserName());
+    setGroupName(initialValues.getUserName());
 
     auto blocked = mainController->userIsBlockedInChat(getUniqueName());
     chatBlockIconLabel->setVisible(blocked);
@@ -63,7 +67,7 @@ NinjamTrackGroupView::NinjamTrackGroupView(MainController *mainController, long 
     updateGeoLocation();
 
     topPanelLayout->addSpacing(0); // fixing Skinny user names #914
-    topPanelLayout->addWidget(countryFlag);
+    //topPanelLayout->addWidget(countryFlag);
     topPanelLayout->addWidget(countryLabel);
     topPanelLayout->setAlignment(countryFlag, Qt::AlignCenter);
 
@@ -78,7 +82,7 @@ NinjamTrackGroupView::NinjamTrackGroupView(MainController *mainController, long 
     styleSheet += "stop: 0.35 " + userColor.name() + ", ";
     styleSheet += "stop: 0.65" + userColor.name() + ", ";
     styleSheet += "stop: 1 rgba(0, 0, 0, 0));";
-    userNameLabel->setStyleSheet(styleSheet);
+    groupNameLabel->setStyleSheet(styleSheet);
 
     QIcon webcamIcon = IconFactory::createWebcamIcon(getTintColor());
     videoWidget = new VideoWidget(this, webcamIcon);
@@ -125,7 +129,7 @@ QColor NinjamTrackGroupView::getTintColor() const
 void NinjamTrackGroupView::addVideoInterval(const QByteArray &encodedVideoData)
 {
 
-    // hide the video (2nd) channel
+    /* hide the video (2nd) channel
     if (trackViews.size() > 1) {
         auto audioChannel = getTracks<NinjamTrackView *>().at(0);
         auto videoChannel = getTracks<NinjamTrackView *>().at(1);
@@ -134,7 +138,7 @@ void NinjamTrackGroupView::addVideoInterval(const QByteArray &encodedVideoData)
 
             audioChannel->setToWide(); // when using video the audio channel is forced to wide
         }
-    }
+    }*/
 
     FFMpegDemuxer *videoDecoder = new FFMpegDemuxer(this, encodedVideoData);
     connect(videoDecoder, &FFMpegDemuxer::imagesDecoded, this, [=](QList<QImage> images, uint frameRate){
@@ -178,7 +182,7 @@ void NinjamTrackGroupView::updateVideoFrame(const QImage &frame)
 
 QString NinjamTrackGroupView::getUniqueName() const
 {
-    QString userName = userNameLabel->text();
+    QString userName = getGroupName();
     if (!userName.contains("@")) {
         return QString("%1@%2")
                 .arg(userName)
@@ -202,7 +206,7 @@ void NinjamTrackGroupView::showChatBlockIcon(const QString &blockedUserName)
 
 void NinjamTrackGroupView::populateContextMenu(QMenu &contextMenu)
 {
-    QString userName = userNameLabel->text();
+    QString userName = getGroupName();
 
     //bool userIsBlockedInChat = mainController->userIsBlockedInChat(getUniqueName());
 
@@ -246,10 +250,13 @@ void NinjamTrackGroupView::updateGeoLocation(const QString &ip)
         return;
 
     auto location = mainController->getGeoLocation(ip);
-    QString countryCode = location.countryCode.toLower();
+    //QString countryCode = location.countryCode.toLower();
+    QString countryCode = location.getCountryCode().toLower();
     QString flagImage = ":/flags/flags/" + countryCode +".png";
     countryFlag->setPixmap(QPixmap(flagImage));
-    countryLabel->setText(location.countryName);
+    //countryLabel->setText(location.countryName);
+    countryLabel->setText(location.getCountryName());
+    countryLabel->setToolTip(location.getRegionName());
 }
 
 void NinjamTrackGroupView::updateGeoLocation()
@@ -367,6 +374,10 @@ void NinjamTrackGroupView::setupVerticalLayout()
     mainLayout->removeItem(tracksLayout);
     mainLayout->removeWidget(videoWidget);
 
+    /*if (videoWidget->isVisible()) {
+        videoWidget->setEnabled(false);
+    }*/
+
     mainLayout->addWidget(topPanel, 0, 0, 1, 1);
     mainLayout->addLayout(tracksLayout, 1, 0, 1, 1);
     mainLayout->addWidget(videoWidget, 2, 0, 1, 1);
@@ -403,9 +414,15 @@ NinjamTrackView *NinjamTrackGroupView::createTrackView(long trackID)
     return new NinjamTrackView(mainController, trackID);
 }
 
-void NinjamTrackGroupView::setUserName(const QString &userName)
+void NinjamTrackGroupView::setGroupName(const QString &groupName)
 {
-    userNameLabel->setText(userName);
+    groupNameLabel->setText(groupName);
+    groupNameLabel->setToolTip(getUniqueName());
+}
+
+QString NinjamTrackGroupView::getGroupName() const
+{
+    return groupNameLabel->text();
 }
 
 QSize NinjamTrackGroupView::sizeHint() const
@@ -449,8 +466,8 @@ Qt::Orientation NinjamTrackGroupView::getTracksOrientation() const
 
 void NinjamTrackGroupView::setNarrowStatus(bool narrow)
 {
-    auto containsVideoChannel = trackViews.size() > 1 && getTracks<NinjamTrackView *>().at(1)->isVideoChannel();
-    auto setToWide = (!narrow && trackViews.size() <= 1) || containsVideoChannel;
+    //auto containsVideoChannel = trackViews.size() > 1 && getTracks<NinjamTrackView *>().at(1)->isVideoChannel();
+    auto setToWide = (!narrow && trackViews.size() <= 1); // || containsVideoChannel;
 
     for (auto trackView : trackViews) {
         if (setToWide)
@@ -465,7 +482,7 @@ void NinjamTrackGroupView::setNarrowStatus(bool narrow)
 void NinjamTrackGroupView::updateGuiElements()
 {
     TrackGroupView::updateGuiElements();
-    userNameLabel->updateMarquee();
+    groupNameLabel->updateMarquee();
 
     // video
     if (!decodedImages.isEmpty()) {

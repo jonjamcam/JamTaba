@@ -541,7 +541,7 @@ void WindowSettings::read(const QJsonObject &in)
 
     if (in.contains("size")) {
         QJsonObject sizeObject = in["size"].toObject();
-        size.setWidth(getValueFromJson(sizeObject, "width", (int)800));
+        size.setWidth(getValueFromJson(sizeObject, "width", (int)990));
         size.setHeight(getValueFromJson(sizeObject, "height", (int)600));
     }
 
@@ -663,10 +663,10 @@ void AudioUnitSettings::read(const QJsonObject &in)
 
 // +++++++++++++++++++++++++++++++++++++++
 
-Channel::Channel(int instrumentIndex) :
-    instrumentIndex(instrumentIndex)
+Channel::Channel(const QString &name) :
+    name(name)
 {
-    qCDebug(jtSettings) << "Channel ctor";
+    //qCDebug(jtSettings) << "Channel ctor";
 }
 
 Plugin::Plugin(const audio::PluginDescriptor &descriptor, bool bypassed, const QByteArray &data) :
@@ -706,7 +706,7 @@ LocalInputTrackSettings::LocalInputTrackSettings(bool createOneTrack) :
     qCDebug(jtSettings) << "LocalInputTrackSettings ctor";
     if (createOneTrack) {
         // create a default channel
-        Channel channel(-1); // default instrument icon
+        Channel channel("my channel");
         qint8 transpose = 0;
         quint8 lowerNote = 0;
         quint8 higherNote = 127;
@@ -732,7 +732,7 @@ void LocalInputTrackSettings::write(QJsonObject &out) const
     QJsonArray channelsArray;
     for (const Channel &channel : channels) {
         QJsonObject channelObject;
-        channelObject["instrument"] = channel.instrumentIndex;
+        channelObject["name"] = channel.name;
         QJsonArray subchannelsArrays;
         int subchannelsCount = 0;
         for (const SubChannel &sub : channel.subChannels) {
@@ -817,7 +817,7 @@ void LocalInputTrackSettings::read(const QJsonObject &in, bool allowSubchannels)
         for (int i = 0; i < channelsArray.size(); ++i) {
 
             QJsonObject channelObject = channelsArray.at(i).toObject();
-            persistence::Channel channel(getValueFromJson(channelObject, "instrument", static_cast<int>(-1)));
+            persistence::Channel channel(getValueFromJson(channelObject, "name", QString("")));
 
             if (channelObject.contains("subchannels")) {
 

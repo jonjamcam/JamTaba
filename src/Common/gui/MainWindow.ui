@@ -135,7 +135,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="placeholderText">
-             <string>user name here</string>
+             <string>user</string>
             </property>
            </widget>
           </item>
@@ -235,7 +235,7 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Rooms to play</string>
+        <string/>
        </attribute>
        <layout class="QVBoxLayout" name="tabLayout">
         <property name="spacing">
@@ -273,7 +273,7 @@
              <x>0</x>
              <y>0</y>
              <width>960</width>
-             <height>320</height>
+             <height>323</height>
             </rect>
            </property>
           </widget>
@@ -672,14 +672,14 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>AudioSlider</class>
-   <extends>QSlider</extends>
-   <header>gui/widgets/Slider.h</header>
-  </customwidget>
-  <customwidget>
    <class>UserNameLineEdit</class>
    <extends>QLineEdit</extends>
    <header>gui/widgets/UserNameLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AudioSlider</class>
+   <extends>QSlider</extends>
+   <header>gui/widgets/Slider.h</header>
   </customwidget>
   <customwidget>
    <class>ChatTabWidget</class>
@@ -689,7 +689,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../resources/jamtaba.qrc"/>
   <include location="../../resources/jamtaba.qrc"/>
  </resources>
  <connections/>

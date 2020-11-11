@@ -23,14 +23,16 @@ using geo::WebIpToLocationResolver;
 
 const QString WebIpToLocationResolver::COUNTRY_CODES_FILE = "country_codes_cache.bin";
 const QString WebIpToLocationResolver::COUNTRY_NAMES_FILE_PREFIX = "country_names_cache"; // the language code will be concatenated
+const QString WebIpToLocationResolver::REGION_NAMES_FILE_PREFIX = "region_names_cache"; // the language code will be concatenated
 const QString WebIpToLocationResolver::LAT_LONG_CACHE_FILE = "lat_long_cache.bin";
 
 const quint32 WebIpToLocationResolver::COUNTRY_NAMES_CACHE_REVISION = 1;
 const quint32 WebIpToLocationResolver::COUNTRY_CODES_CACHE_REVISION = 1;
+const quint32 WebIpToLocationResolver::REGION_NAMES_CACHE_REVISION = 1;
 const quint32 WebIpToLocationResolver::LAT_LONG_CACHE_REVISION = 1;
 
 // Alternative servers private implementation strategies
-const int MaxServersAlternatives = 4;
+const int MaxServersAlternatives = 1;
 
 struct IpToLocationAPI {
     QString name;
@@ -39,10 +41,7 @@ struct IpToLocationAPI {
 };
 
 static IpToLocationAPI apis[MaxServersAlternatives] = {
-    {"ipStack", "http://api.ipstack.com",   "ddf3b56e56a1a3139193a8272516ea7b"},
-    {"ipApi",   "http://api.ipapi.com",     "22f433857895c84347e949db234af11f"},
-    {"ipStack", "http://api.ipstack.com",   "7dfb5855025fa60f5ce082a4c376091a"},
-    {"ipApi",   "http://api.ipapi.com",     "3397dda1789e2826bd7a15abe2043ee9"} // Daniele API Key
+    {"ipApi",   "http://api.ipapi.com",     "0c2691f4da94db55b32aafa61d38368a"},
 };
 
 WebIpToLocationResolver::WebIpToLocationResolver(const QDir &cacheDir) :
@@ -57,6 +56,7 @@ WebIpToLocationResolver::WebIpToLocationResolver(const QDir &cacheDir) :
 
     if (!needLoadTheOldCache()) {
         loadCountryNamesFromFile(currentLanguage); // loading the english country names by default
+        loadRegionNamesFromFile(currentLanguage); // loading the english region names by default
     } else {
         loadOldCacheContent();
         deleteOldCacheFile();
@@ -67,6 +67,7 @@ WebIpToLocationResolver::~WebIpToLocationResolver()
 {
     saveCountryCodesToFile();
     saveCountryNamesToFile();
+    saveRegionNamesToFile();
     saveLatLongsToFile();
 }
 
@@ -102,6 +103,17 @@ void WebIpToLocationResolver::saveCountryCodesToFile()
                                 << COUNTRY_CODES_FILE;
     else
         qCritical() << "Can't save country codes in the file " << COUNTRY_CODES_FILE;
+}
+
+void WebIpToLocationResolver::saveRegionNamesToFile()
+{
+    QString filename = buildRegionFileNameFromLanguage(currentLanguage);
+    quint32 cacheRevision = REGION_NAMES_CACHE_REVISION;
+    if (saveMapToFile(filename, regionNamesCache, cacheRevision))
+        qCDebug(jtIpToLocation) << regionNamesCache.size() << " region names stored in "
+                                << filename;
+    else
+        qCritical() << "Can't save region names in the file " << filename;
 }
 
 bool WebIpToLocationResolver::saveMapToFile(const QString &fileName, const QMap<QString, QPointF> &map, quint32 cacheHeaderRevision)
@@ -180,15 +192,17 @@ void WebIpToLocationResolver::replyFinished(QNetworkReply *reply)
 
         QString countryName = root["country_name"].toString();
         QString countryCode = root["country_code"].toString();
-        countryCodesCache.insert(ip, countryCode);
+        QString regionName = root["region_name"].toString();
         countryNamesCache.insert(countryCode, countryName);
+        countryCodesCache.insert(ip, countryCode);
+        regionNamesCache.insert(ip, regionName);
 
         if (root.contains("latitude") && root.contains("longitude")) {
             auto latitude = root["latitude"].toDouble();
             auto longitude = root["longitude"].toDouble();
             latLongCache.insert(ip, QPointF(latitude, longitude));
             qCDebug(jtIpToLocation) << "Data received IP:" << ip << " Lang:" << language << " country code:" << countryCode
-                                    << " country name:" << countryName << "lat:" << latitude << " long:" << longitude;
+                                    << " country name:" << countryName << " region:" << regionName << "lat:" << latitude << " long:" << longitude;
         } else {
             qCCritical(jtIpToLocation) << "The json 'location' object not contains 'latidude' or 'longitude' entries";
         }
@@ -268,20 +282,23 @@ geo::Location WebIpToLocationResolver::resolve(const QString &ip, const QString 
     QString code = sanitizeLanguageCode(languageCode);
     if (code != currentLanguage) {
         saveCountryNamesToFile(); // save cached country names before change the language
+        saveRegionNamesToFile(); // save cached region names before change the language
         currentLanguage = code;
         loadCountryNamesFromFile(currentLanguage); // update the country names QMap
+        loadRegionNamesFromFile(currentLanguage); // update the region names QMap
 
         pendingRequests.clear();
     }
 
     if (countryCodesCache.contains(ip)) {
         QString countryCode = countryCodesCache[ip];
+        QString regionName = regionNamesCache[ip];
         if (countryNamesCache.contains(countryCode)) {
             QString countryName = countryNamesCache[countryCode];
             if (latLongCache.contains(ip)) {
                 qreal latitude = latLongCache[ip].x();
                 qreal longitude = latLongCache[ip].y();
-                return Location(countryName, countryCode, latitude, longitude);
+                return Location(countryName, countryCode, regionName, latitude, longitude);
             }
         }
     }
@@ -295,6 +312,11 @@ geo::Location WebIpToLocationResolver::resolve(const QString &ip, const QString 
 QString WebIpToLocationResolver::buildFileNameFromLanguage(const QString &languageCode)
 {
     return COUNTRY_NAMES_FILE_PREFIX + "_" + languageCode + ".bin";
+}
+
+QString WebIpToLocationResolver::buildRegionFileNameFromLanguage(const QString &languageCode)
+{
+    return REGION_NAMES_FILE_PREFIX + "_" + languageCode + ".bin";
 }
 
 void WebIpToLocationResolver::loadLatLongsFromFile()
@@ -325,6 +347,16 @@ void WebIpToLocationResolver::loadCountryCodesFromFile()
                                 << " cached country codes loaded from file!";
     else
         qCritical() << "Can't open the file " << COUNTRY_CODES_FILE;
+}
+
+void WebIpToLocationResolver::loadRegionNamesFromFile(const QString &languageCode)
+{
+    QString fileName = buildRegionFileNameFromLanguage(languageCode);
+    quint32 expectedCacheHeaderRevision = REGION_NAMES_CACHE_REVISION;
+    if (populateQMapFromFile(fileName, regionNamesCache, expectedCacheHeaderRevision))
+        qCDebug(jtIpToLocation) << regionNamesCache.size() << " cached region names loaded, translated to " << languageCode;
+    else
+        qCritical() << "Can't open the file " << fileName;
 }
 
 bool WebIpToLocationResolver::populateQMapFromFile(const QString &fileName, QMap<QString, QString> &map, quint32 expectedCacheHeaderRevision)
@@ -378,9 +410,11 @@ void WebIpToLocationResolver::loadOldCacheContent()
                 if (!parts.isEmpty()) {
                     QString ip = parts.at(0);
                     QString countryName = (parts.size() >= 1) ? parts.at(1) : "";
+                    QString regionName = (parts.size() >= 2) ? parts.at(2) : "";
                     QString countryCode = (parts.size() >= 2) ? parts.at(2) : "";
                     countryCodesCache.insert(ip, countryCode);
                     countryNamesCache.insert(countryCode, countryName);
+                    regionNamesCache.insert(ip, regionName);
                 }
             }
         }

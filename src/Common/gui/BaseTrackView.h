@@ -79,6 +79,8 @@ protected:
 
     void changeEvent(QEvent *e) override;
 
+    bool eventFilter(QObject *source, QEvent *ev);
+
     virtual void translateUI();
 
     long trackID;
@@ -94,6 +96,8 @@ protected:
     void createLayoutStructure();
 
     virtual QPoint getDbValuePosition(const QString &dbValueText, const QFontMetrics &metrics) const;
+
+    QLabel *peaksDbLabel;
 
     // level slider
     AudioSlider *levelSlider;
@@ -115,6 +119,7 @@ protected:
     // main layout buildind blocks
     QGridLayout *mainLayout;
     QBoxLayout *secondaryChildsLayout; // right side widgets in vertical layout, bottom widgets (2nd row) in horizontal layout
+    QBoxLayout *sliderPeakLayout;
 
     virtual void setupVerticalLayout();
 

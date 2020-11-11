@@ -9,7 +9,7 @@ namespace geo
     class Location
     {
     public:
-        Location(const QString &countryName, const QString &countryCode, double latitude = -200, double longitude = -200, const QString &city = "UNKNOWN");
+        Location(const QString &countryName,const QString &countryCode, const QString &regionName, double latitude = -200, double longitude = -200);
         Location();
 
         double getLatitude() const;
@@ -17,15 +17,15 @@ namespace geo
 
         QString getCountryName() const;
         QString getCountryCode() const;
+        QString getRegionName() const;
 
-        QString getCity() const;
 
         bool isUnknown() const;
 
     private:
         QString countryName;
         QString countryCode;
-        QString city;
+        QString regionName;
         double latitude;
         double longitude;
 
@@ -52,9 +52,9 @@ namespace geo
         return countryCode;
     }
 
-    inline QString Location::getCity() const
+    inline QString Location::getRegionName() const
     {
-        return city;
+        return regionName;
     }
 
     class IpToLocationResolver : public QObject

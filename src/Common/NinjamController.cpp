@@ -584,7 +584,7 @@ void NinjamController::start(const ServerInfo &server)
                 &NinjamController::handleIntervalCompleted);
 
         connect(ninjamService, &Service::serverInitialBpmBpiAvailable,
-                this, &NinjamController::setBpmBpi);
+                        this, &NinjamController::setBpmBpi);
 
         connect(ninjamService, &Service::userChannelCreated, this,
                 &NinjamController::addNinjamRemoteChannel);
@@ -668,8 +668,8 @@ QString NinjamController::getUniqueKeyForChannel(const UserChannel &channel,
 
 bool NinjamController::userIsBot(const QString userName) const
 {
-    if (mainController)
-        return mainController->getBotNames().contains(userName);
+    /*if (mainController)
+        return mainController->getBotNames().contains(userName);*/ // bot inside ninjam tracks
     return false;
 }
 
@@ -876,7 +876,8 @@ void NinjamController::handleIntervalCompleted(const User &user, quint8 channelI
     if (mainController->isMultiTrackRecordingActivated())
     {
         auto geoLocation = mainController->getGeoLocation(user.getIp());
-        QString userName = user.getName() + " from " + geoLocation.countryName;
+        //QString userName = user.getName() + " from " + geoLocation.countryName;
+        QString userName = user.getName() + " from " + geoLocation.getCountryName();
         mainController->saveEncodedAudio(userName, channelIndex, encodedData);
     }
 

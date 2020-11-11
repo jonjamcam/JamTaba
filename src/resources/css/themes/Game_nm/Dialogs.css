@@ -58,3 +58,9 @@ ChordProgressionCreationDialog QComboBox
 {
     min-width: 22px;
 }
+
+PrivateServerDialog #ServerList
+{
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 30);
+}

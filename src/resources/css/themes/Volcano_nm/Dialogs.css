@@ -272,3 +272,12 @@ BusyDialog > QLabel /* the text appearing in Busy dialog, like "connecting in ni
     font-weight: bold;
     color: black;
 }
+
+PrivateServerDialog #ServerList
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    stop: 0.0 #FFD470,
+    stop: 0.33 #FDE09B,
+    stop: 0.66 #FDE5A9,
+    stop: 1.0 #EF820D);
+}

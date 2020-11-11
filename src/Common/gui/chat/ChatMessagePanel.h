@@ -73,6 +73,7 @@ private:
     };
 
     FontDetails originalMessageFont; // stored after the widget is polished
+    FontDetails originalTimestampFont;
     FontDetails originalAuthorFont;
 
     const static quint32 ARROW_WIDTH = 10;

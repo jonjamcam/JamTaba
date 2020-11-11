@@ -11,9 +11,9 @@ MainWindowVST::MainWindowVST(MainControllerVST *controller)
 
 TextEditorModifier *MainWindowVST::createTextEditorModifier()
 {
-    auto controller = static_cast<MainControllerVST *>(mainController);
-    bool hostIsSonar = controller->getHostName().contains("sonar", Qt::CaseInsensitive);
-    if (hostIsSonar)
+    //auto controller = static_cast<MainControllerVST *>(mainController);
+    //bool hostIsSonar = controller->getHostName().contains("sonar", Qt::CaseInsensitive);
+    //if (hostIsSonar)
         return new SonarTextEditorModifier();
 
     return MainWindowPlugin::createTextEditorModifier();

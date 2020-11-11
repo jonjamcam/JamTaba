@@ -146,6 +146,21 @@ TrackGroupView[unlighted="true"] > #topPanel                /* the track group t
 }
 /* -----------------------------------------*/
 
+/* Small Label used to show max peak below peak meters
+-------------------------------------------------------*/
+BaseTrackView #peaksDbLabel
+{
+    color: rgba(0, 0, 0, 120);
+    border: 1px solid rgba(0, 0, 0, 8);
+    background-color: rgba(0, 0, 0, 6);
+    border-radius: 1px;
+}
+
+BaseTrackView[unlighted="true"] #peaksDbLabel
+{
+   border: none;
+   background-color: rgba(0, 0, 0, 10);
+}
 
 BaseTrackView[unlighted="true"] #panSlider::handle:hover,
 BaseTrackView[unlighted="true"] #levelSlider::handle:hover

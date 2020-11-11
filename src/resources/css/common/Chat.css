@@ -60,6 +60,11 @@ ChatMessagePanel #labelUserName /* chat message author */
     margin: 0px;
 }
 
+ChatMessagePanel #labelTimeStamp /* chat message timestamp */
+{
+    font-size: 8px;
+}
+
 ChatMessagePanel #translateButton,
 ChatMessagePanel #blockButton
 {

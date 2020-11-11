@@ -2,7 +2,8 @@
 -------------------------------------*/
 
 /* Button ----------------------*/
-QPushButton
+QPushButton,
+BoostSpinBox
 {
     background-color: rgb(180, 207, 250);
     border: 1px outset rgba(0, 0, 140, 120);

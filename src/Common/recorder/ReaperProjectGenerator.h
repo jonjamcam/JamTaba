@@ -19,7 +19,7 @@ public:
 
     inline QString getWriterName() const override // Localized
     {
-        return QCoreApplication::translate("Recorder::ReaperProjectGenerator", "Generate Reaper Project file (RPP)");
+        return QCoreApplication::translate("Recorder::ReaperProjectGenerator", "Reaper Project file (RPP) for Audio and Video folder");
     }
 
     void setJamDir(const QString &newJamName, const QString &recordBasePath) override;

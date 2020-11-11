@@ -49,18 +49,19 @@
 #include <QImage>
 #include <QCameraInfo>
 #include <QToolTip>
+#include <QTime>
 
-const QSize MainWindow::MAIN_WINDOW_MIN_SIZE = QSize(1100, 695);
+const QSize MainWindow::MAIN_WINDOW_MIN_SIZE = QSize(1012, 695);
 const QString MainWindow::NIGHT_MODE_SUFFIX = "_nm";
 
-const quint8 MainWindow::DEFAULT_REFRESH_RATE = 30; // in Hertz
-const quint8 MainWindow::MAX_REFRESH_RATE = 60; // in Hertz
+const quint8 MainWindow::DEFAULT_REFRESH_RATE = 10; // in Hertz
+const quint8 MainWindow::MAX_REFRESH_RATE = 30; // in Hertz
 
-const quint32 MainWindow::DEFAULT_NETWORK_USAGE_UPDATE_PERIOD = 4000; // 4 seconds
+const quint32 MainWindow::DEFAULT_NETWORK_USAGE_UPDATE_PERIOD = 500; // 500 miliseconds
 
-const int MainWindow::PERFORMANCE_MONITOR_REFRESH_TIME = 200; //in miliseconds
+const int MainWindow::PERFORMANCE_MONITOR_REFRESH_TIME = 800; //in miliseconds
 
-const QString MainWindow::JAMTABA_CHAT_BOT_NAME("JamTaba");
+const QString MainWindow::JAMTABA_CHAT_BOT_NAME(" "); // MSG
 
 using persistence::LocalInputTrackSettings;
 using persistence::Channel;
@@ -101,8 +102,11 @@ MainWindow::MainWindow(MainController *mainController, QWidget *parent) :
     qCDebug(jtGUI) << "Creating MainWindow...";
 
     ui.setupUi(this);
+    ui.chatTabWidget->collapse(true);
+    ui.labelYourControls->setVisible(false);
+    ui.localControlsCollapseButton->setVisible(false);
 
-    setWindowTitle(QString("JamTaba (%1 bits)").arg(QSysInfo::WordSize));
+    setWindowTitle(QString("JamTaba Classic")); // + VERSION + " %1 bits)").arg(QSysInfo::WordSize));
 
     initializeLoginService();
     initializeMainTabWidget();
@@ -357,7 +361,7 @@ void MainWindow::changeCameraStatus(bool activated)
         while (localGroupChannels.size() > 1)
             removeChannelsGroup(localGroupChannels.at(1)->getChannelIndex()); // delete the 2nd channel if exists
 
-        addChannelsGroup(-1); // add the 2nd channel using the default icon
+        addChannelsGroup("Video"); // add the 2nd channel using the name "Video"
 
         auto secondChannel = localGroupChannels.at(1);
         secondChannel->setPeakMeterMode(localGroupChannels.first()->isShowingPeakMeterOnly());
@@ -718,7 +722,7 @@ void MainWindow::showPeakMetersOnlyInLocalControls(bool showPeakMetersOnly)
     updateLocalInputChannelsGeometry();
 
     ui.userNamePanel->setVisible(!showPeakMetersOnly);
-    ui.labelYourControls->setVisible(!showPeakMetersOnly);
+    //ui.labelYourControls->setVisible(!showPeakMetersOnly);
 
     mainController->setLocalChannelsCollapsed(showPeakMetersOnly);
 }
@@ -767,7 +771,7 @@ persistence::LocalInputTrackSettings MainWindow::getInputsSettings() const
 {
     LocalInputTrackSettings settings;
     for (auto trackGroupView : localGroupChannels) {
-        Channel channel(trackGroupView->getInstrumentIcon());
+        Channel channel(trackGroupView->getGroupName());
         int subchannelsCount = 0;
         for (auto trackView : trackGroupView->getTracks<LocalTrackView *>()) {
             auto inputNode = trackView->getInputNode();
@@ -857,10 +861,10 @@ void MainWindow::highlightChannelGroup(int index) const
         Highligther::getInstance()->highlight(localGroupChannels.at(index));
 }
 
-void MainWindow::addChannelsGroup(int instrumentIndex)
+void MainWindow::addChannelsGroup(const QString &name)
 {
     int channelIndex = localGroupChannels.size();
-    addLocalChannel(channelIndex, instrumentIndex, true);
+    addLocalChannel(channelIndex, name, true);
 
     if (mainController->isPlayingInNinjamRoom()) {
         mainController->sendNewChannelsNames(getChannelsMetadata());
@@ -911,12 +915,12 @@ LocalTrackGroupView *MainWindow::createLocalTrackGroupView(int channelGroupIndex
     return new LocalTrackGroupView(channelGroupIndex, this);
 }
 
-LocalTrackGroupView *MainWindow::addLocalChannel(int channelGroupIndex, int instrumentIndex,
+LocalTrackGroupView *MainWindow::addLocalChannel(int channelGroupIndex, const QString &channelName,
                                                  bool createFirstSubchannel)
 {
     auto localChannel = createLocalTrackGroupView(channelGroupIndex);
 
-    connect(localChannel, &LocalTrackGroupView::instrumentIconChanged, this, &MainWindow::updateChannelsNames);
+    connect(localChannel, &LocalTrackGroupView::nameChanged, this, &MainWindow::updateChannelsNames);
 
     connect(localChannel, &LocalTrackGroupView::trackAdded, this, &MainWindow::updateLocalInputChannelsGeometry);
 
@@ -927,7 +931,7 @@ LocalTrackGroupView *MainWindow::addLocalChannel(int channelGroupIndex, int inst
 
     localGroupChannels.append(localChannel);
 
-    localChannel->setInstrumentIcon(instrumentIndex);
+    localChannel->setGroupName(channelName);
     ui.localTracksLayout->addWidget(localChannel);
 
     if (createFirstSubchannel) {
@@ -995,7 +999,7 @@ void MainWindow::openLooperWindow(uint trackID)
         Q_ASSERT(channel);
 
         int subchannelInternalIndex = channel->getSubchannelInternalIndex(trackID);
-        QString channelName = channel->getChannelGroupName();
+        QString channelName = channel->getGroupName();
         if (channelName.isEmpty())
             channelName = tr("Channel %1").arg(QString::number(channel->getChannelIndex() + 1));
         else
@@ -1028,12 +1032,13 @@ void MainWindow::initializeLocalInputChannels(const LocalInputTrackSettings &inp
     for (const auto &channel : inputsSettings.channels) {
 
         // just a temporary workaround to https://github.com/elieserdejesus/JamTaba/issues/1104
-        if(channelIndex > 0 && channel.instrumentIndex == static_cast<int>(InstrumentIndex::Video))
+        if(channelIndex > 0 && channel.name == "Video")
             continue; // skip this channel, it's a video channel used in the last session
 
-        qCDebug(jtGUI) << "\tCreating channel "<< channelIndex;
+        qCDebug(jtGUI) << "\tCreating channel "<< channel.name;
         bool createFirstSubChannel = channel.subChannels.isEmpty();
-        auto channelView = addLocalChannel(channelIndex, channel.instrumentIndex, createFirstSubChannel);
+        auto channelView = addLocalChannel(channelIndex, channel.name,
+                                                           createFirstSubChannel);
         for (const auto &subChannel : channel.subChannels) {
             qCDebug(jtGUI) << "\t\tCreating sub-channel ";
             auto subChannelView = channelView->addTrackView(channelIndex);
@@ -1043,7 +1048,7 @@ void MainWindow::initializeLocalInputChannels(const LocalInputTrackSettings &inp
         channelIndex++;
     }
     if (channelIndex == 0) // no channels in settings file or no settings file...
-        addLocalChannel(0, -1, true); // create a channel using an empty instrument icon
+        addLocalChannel(0, "", true); // create a channel using an empty name
 
     qCDebug(jtGUI) << "Initializing local inputs done!";
 
@@ -1122,9 +1127,6 @@ void MainWindow::centerBusyDialog()
 
 bool MainWindow::jamRoomLessThan(const login::RoomInfo &r1, const login::RoomInfo &r2)
 {
-    if( r1.isPrivateServer())
-        return true;
-
     return r1.getNonBotUsersCount() > r2.getNonBotUsersCount();
 }
 
@@ -1157,7 +1159,7 @@ QString MainWindow::sanitizeLatestVersionDetails(const QString &details)
 void MainWindow::showNewVersionAvailableMessage(const QString &versionTag, const QString &publicationDate, const QString &latestVersionDetails)
 {
     hideBusyDialog();
-    QString text = tr("A new Jamtaba version is available for download! Please use the <a href='http://www.jamtaba.com'>new version</a>!");
+/*    QString text = tr("A new Jamtaba version is available for download! Please use the <a href='http://www.jamtaba.com'>new version</a>!");
 
     auto locale = QLocale::system();
     auto dateFormat = locale.dateTimeFormat(QLocale::FormatType::ShortFormat);
@@ -1169,7 +1171,7 @@ void MainWindow::showNewVersionAvailableMessage(const QString &versionTag, const
         text += MainWindow::sanitizeLatestVersionDetails(latestVersionDetails);
     }
 
-    QMessageBox::information(this, tr("New Jamtaba version available!"), text);
+    QMessageBox::information(this, tr("New Jamtaba version available!"), text);*/
 }
 
 JamRoomViewPanel *MainWindow::createJamRoomViewPanel(const login::RoomInfo &roomInfo)
@@ -1190,71 +1192,15 @@ bool MainWindow::canUseTwoColumnLayoutInPublicRooms() const
     return ui.contentTabWidget->width() >= 860;
 }
 
-QList<login::RoomInfo> MainWindow::loadPrivateServersFromJson(const QFileInfo &privateServersFile)
-{
-    QList<login::RoomInfo> privateServers;
-
-    QFile jsonFile(privateServersFile.absoluteFilePath());
-
-    if (jsonFile.exists() && jsonFile.open(QFile::ReadOnly)) {
-        auto root = QJsonDocument::fromJson(jsonFile.readAll()).object();
-        if (root.contains("servers")) {
-            auto serversArray = root["servers"].toArray();
-            for (int i = 0; i < serversArray.size(); ++i) {
-                auto serverJson = serversArray[i].toObject();
-                if (serverJson.contains("server_name") && serverJson.contains("server_max_users")) {
-                    auto serverName = serverJson["server_name"].toString("Error");
-                    auto serverMaxUsers = serverJson["server_max_users"].toInt(8);
-
-                    auto indexOfSeparator = serverName.indexOf(":");
-                    if (indexOfSeparator > 0) {
-                        auto name = serverName.left(indexOfSeparator);
-                        auto port = serverName.right(serverName.length() - (indexOfSeparator + 1)).toInt();
-                        auto userName = serverJson["user_name"].toString(mainController->getUserName());
-                        auto userPass = serverJson["user_pass"].toString(QString());
-                        RoomInfo privateServer(name, port, serverMaxUsers);
-                        privateServer.setPreferredUserCredentials(userName, userPass);
-                        privateServers.append(privateServer);
-                    }
-                }
-            }
-        }
-    }
-    else {
-        if (!jsonFile.exists()) {
-            qDebug() << "The private servers json file not found!";
-        }
-        else {
-            qDebug() << "Error opening private server json file: " << jsonFile.errorString();
-        }
-    }
-
-    return privateServers;
-}
-
 void MainWindow::refreshPublicRoomsList(const QList<login::RoomInfo> &publicRooms)
 {
-    auto privateServersFilePath = Configurator::getInstance()->getPrivateServersFilePath();
-
-    QFileInfo privateServersFileInfo(privateServersFilePath);
-
-    if (publicRooms.isEmpty() && !privateServersFileInfo.exists())
+    if (publicRooms.isEmpty())
         return;
 
     hideBusyDialog();
 
     QList<login::RoomInfo> sortedRooms(publicRooms);
     qSort(sortedRooms.begin(), sortedRooms.end(), jamRoomLessThan);
-
-    // put the private servers (if available) at the first positions
-    int totalPrivateServers = 0;
-    if (privateServersFileInfo.exists()) {
-        auto privateServers = loadPrivateServersFromJson(privateServersFileInfo);
-        for (int i = 0; i < privateServers.size(); ++i) {
-            sortedRooms.insert(0, privateServers[i]);
-        }
-        totalPrivateServers = privateServers.size();
-    }
 
     int index = 0;
     bool twoCollumns = canUseTwoColumnLayoutInPublicRooms();
@@ -1277,7 +1223,6 @@ void MainWindow::refreshPublicRoomsList(const QList<login::RoomInfo> &publicRoom
         }
         auto layout = dynamic_cast<QGridLayout *>(ui.allRoomsContent->layout());
         layout->addWidget(roomViewPanel, rowIndex, collumnIndex);
-
         index++;
     }
 
@@ -1307,10 +1252,10 @@ QList<ninjam::client::ChannelMetadata> MainWindow::getChannelsMetadata() const
 {
     QList<ninjam::client::ChannelMetadata> channelsMetadata;
 
-    for (auto channelGroup : localGroupChannels) {
+    for (LocalTrackGroupView *channel : localGroupChannels) {
         ninjam::client::ChannelMetadata channelData;
-        channelData.name = channelGroup->getChannelGroupName();
-        channelData.voiceChatActivated = mainController->isVoiceChatActivated(channelGroup->getChannelIndex());
+        channelData.name = channel->getGroupName();
+        channelData.voiceChatActivated = mainController->isVoiceChatActivated(channel->getChannelIndex());
         channelsMetadata.append(channelData);
     }
 
@@ -1405,6 +1350,7 @@ void MainWindow::collapseBottomArea(bool collapse)
     }
 
     ui.masterTitleLabel->setVisible(!collapse);
+    ui.masterFader->setVisible(!collapse);
 
     if (collapse) {
         if (canHandleNinjamPanels) {
@@ -1442,8 +1388,8 @@ void MainWindow::addNinjamPanelsInBottom()
     ui.bottomPanelLayout->addWidget(ninjamPanel, 1, 1, 1, 1, Qt::AlignCenter);
     ui.bottomPanelLayout->addWidget(ui.masterControlsPanel, 1, 2, 1, 1);
 
-    ui.bottomPanelLayout->setAlignment(metronomePanel, Qt::AlignBottom | Qt::AlignCenter);
-    ui.bottomPanelLayout->setAlignment(ui.masterControlsPanel, Qt::AlignBottom | Qt::AlignCenter);
+    ui.bottomPanelLayout->setAlignment(metronomePanel, Qt::AlignCenter);
+    ui.bottomPanelLayout->setAlignment(ui.masterControlsPanel, Qt::AlignCenter);
 
     ui.masterTitleLabel->setVisible(true);
     ninjamPanel->setVisible(true);
@@ -1516,7 +1462,7 @@ void MainWindow::handleUserLeaving(const QString &userFullName)
 
     auto localUser = mainController->getUserName();
     for (auto chat : chatsToReport)
-        chat->addMessage(localUser, JAMTABA_CHAT_BOT_NAME, tr("%1 has left the room.").arg(ninjam::client::extractUserName(userFullName)));
+        chat->addMessage(localUser, JAMTABA_CHAT_BOT_NAME, tr("%1 has left the server.").arg(ninjam::client::extractUserName(userFullName)));
 
     usersColorsPool->giveBack(userFullName); // reuse the color mapped to this 'leaving' user
 }
@@ -1538,7 +1484,7 @@ void MainWindow::handleUserEntering(const QString &userFullName)
 
     auto localUser = mainController->getUserName();
     for (auto chat : chatsToReport)
-        chat->addMessage(localUser, JAMTABA_CHAT_BOT_NAME, tr("%1 has joined the room.").arg(ninjam::client::extractUserName(userFullName)));
+        chat->addMessage(localUser, JAMTABA_CHAT_BOT_NAME, tr("%1 has joined the server.").arg(ninjam::client::extractUserName(userFullName)));
 
 }
 
@@ -1768,16 +1714,10 @@ void MainWindow::createMainChat(bool turnedOn)
     });
 
     connect(mainChat.data(), &MainChat::error, [=](const QString &errorMessage){
-        Q_UNUSED(errorMessage)
-
-        if (mainController && mainChatPanel->isOn()) {
+        if (mainController) {
             auto localUserName = mainController->getUserName();
             auto author = JAMTABA_CHAT_BOT_NAME;
-            QString message(tr("Public chat error - service is temporarily unavailable"));
-            mainChatPanel->addMessage(localUserName, author, message, true, false);
-            mainChatPanel->turnOff();
-            mainChatPanel->hideOnOffButton();
-            mainChatPanel->setDisabled(true);
+            mainChatPanel->addMessage(localUserName, author, errorMessage, true, false);
         }
     });
 
@@ -2074,6 +2014,8 @@ void MainWindow::exitFromRoom(bool normalDisconnection, QString disconnectionMes
     // unlock the user name field
     setUserNameReadOnlyStatus(false);
 
+    ui.chatTabWidget->collapse(true);
+
     // remove jam and the chords tab
     while (ui.contentTabWidget->count() > 1) {
         ui.contentTabWidget->widget(1)->deleteLater();
@@ -2096,10 +2038,19 @@ void MainWindow::exitFromRoom(bool normalDisconnection, QString disconnectionMes
     setInputTracksPreparingStatus(false); /** reset the preparing status when user leave the room. This is specially necessary if user enter in a room and leave before the track is prepared to transmit.*/
 
     if (!normalDisconnection) {
+
+        auto metrics = fontMetrics();
+        auto messageWidth = metrics.width(disconnectionMessage);
+
+        auto pos = QPoint(width()/2 - messageWidth/2, height()/2);
+
         if (!disconnectionMessage.isEmpty())
-            showMessageBox(tr("Error"), disconnectionMessage, QMessageBox::Warning);
+            //showMessageBox(tr("Error"), disconnectionMessage, QMessageBox::Warning);
+            QToolTip::showText(mapToGlobal(pos), disconnectionMessage, this, rect());
+
         else
-            showMessageBox(tr("Error"), tr("Disconnected from ninjam server"), QMessageBox::Warning);
+            //showMessageBox(tr("Error"), tr("Disconnected from ninjam server"), QMessageBox::Warning);
+            QToolTip::showText(mapToGlobal(pos), tr("Disconnected from ninjam server"), this, rect());
     } else {
         if (roomToJump) { // waiting the disconnection to connect in a new room?
             showBusyDialog(tr("Connecting with %1").arg(roomToJump->getName()));
@@ -2165,7 +2116,7 @@ void MainWindow::timerEvent(QTimerEvent *)
             ninjamWindow->updatePeaks();
     }
 
-    // update cpu and RAM usage
+    // update cpu, battery and RAM usage
     qint64 now = QDateTime::currentMSecsSinceEpoch();
     if (now - lastPerformanceMonitorUpdate >= PERFORMANCE_MONITOR_REFRESH_TIME) {
 
@@ -2178,15 +2129,17 @@ void MainWindow::timerEvent(QTimerEvent *)
                    bool showBattery = batteryUsed < 255; //Battery meter active only if battery is available
 
                    QString string;
+                       string += QString("CPU: %1%").arg(performanceMonitor->getCpuUsage());
                    if (showMemmory)
-                       string += QString("MEM: %1%").arg(performanceMonitor->getMemmoryUsed());
+                       string += QString(" MEM: %1%").arg(performanceMonitor->getMemmoryUsed());
 
                    if (showBattery)
                        string += QString(" BAT: %1%").arg(performanceMonitor->getBatteryUsed());
 
                    performanceMonitorLabel->setText(string);
+                   performanceMonitorLabel->setToolTip(" Current Time is " + QTime::currentTime().toString("h:mm"));
 
-                   performanceMonitorLabel->setVisible(showMemmory || showBattery);
+                   //performanceMonitorLabel->setVisible(showMemmory || showBattery);
 
                }
 
@@ -2594,10 +2547,8 @@ void MainWindow::updatePublicRoomsListLayout()
 {
     QList<login::RoomInfo> roomInfos;
 
-    for (auto roomView : roomViewPanels) {
-        if (!roomView->getRoomInfo().isPrivateServer())
-            roomInfos.append(roomView->getRoomInfo());
-    }
+    for (auto roomView : roomViewPanels)
+        roomInfos.append(roomView->getRoomInfo());
 
     refreshPublicRoomsList(roomInfos);
 }
@@ -3004,9 +2955,5 @@ void MainWindow::updateCollapseButtons()
 
 QString MainWindow::getChannelGroupName(int index) const
 {
-    if (index >= 0 && index < localGroupChannels.size()) {
-        return localGroupChannels.at(index)->getChannelGroupName();
-    }
-
-    return QString();
+    return localGroupChannels.at(index)->getGroupName();
 }

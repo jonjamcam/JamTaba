@@ -103,7 +103,7 @@ void ChatTabWidget::clear()
 
 void ChatTabWidget::retranslateUi()
 {
-    tabBar->setTabText(0, tr("Chat"));
+    tabBar->setTabText(0, tr(""));
     if (mainChat)
         mainChat->setTopicMessage(tr("Public chat"));
 }
@@ -124,7 +124,7 @@ ChatPanel *ChatTabWidget::createMainChat(TextEditorModifier *textEditorModifier)
         return mainChat;
     }
 
-    tabBar->addTab(tr("Chat")); // add main chat
+    tabBar->addTab(tr("")); // add main chat
 
     auto botNames = mainController->getBotNames();
     auto emojiManager = mainController->getEmojiManager();

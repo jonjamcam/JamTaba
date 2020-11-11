@@ -202,7 +202,9 @@ QSize LocalTrackView::sizeHint() const
 
 void LocalTrackView::setupMetersLayout()
 {
-    mainLayout->addWidget(levelSlider, 1, 0); // put the levelSlider in the original place
+    sliderPeakLayout->addWidget(levelSlider);
+    sliderPeakLayout->addWidget(peaksDbLabel, 0, Qt::AlignCenter);
+    mainLayout->addLayout(sliderPeakLayout, 1, 0, 1, 1, Qt::AlignBottom); // put the levelSlider and peakDblabel and peakdblabel in the original place
 }
 
 void LocalTrackView::setPeakMetersOnlyMode(bool peakMetersOnly)
@@ -212,7 +214,7 @@ void LocalTrackView::setPeakMetersOnlyMode(bool peakMetersOnly)
 
         gui::setLayoutItemsVisibility(secondaryChildsLayout, !this->peakMetersOnly);
 
-        levelSlider->setShowMeterOnly(peakMetersOnly);
+        //levelSlider->setShowMeterOnly(peakMetersOnly);
 
         gui::setLayoutItemsVisibility(panWidgetsLayout, !this->peakMetersOnly);
 
@@ -238,6 +240,7 @@ void LocalTrackView::setPeakMetersOnlyMode(bool peakMetersOnly)
 
         soloButton->setVisible(!peakMetersOnly);
         muteButton->setVisible(!peakMetersOnly);
+        peaksDbLabel->setVisible(!peakMetersOnly);
         Qt::Alignment alignment = peakMetersOnly ? Qt::AlignRight : Qt::AlignHCenter;
         levelSlider->parentWidget()->layout()->setAlignment(levelSlider, alignment);
 

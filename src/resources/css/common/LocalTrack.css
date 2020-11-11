@@ -180,7 +180,8 @@ LocalTrackGroupView  #toolButton                /* The wheel/gear button used to
     border: none;
     padding: 0px;
     margin: 0px;
-    max-width: 14px;
+    width: 14px;
+    height: 14px;;
 }
 
 LocalTrackGroupView   #toolButton:hover

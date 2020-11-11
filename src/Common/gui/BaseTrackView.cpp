@@ -21,8 +21,8 @@
 
 const uint BaseTrackView::FADER_HEIGHT = 12;
 
-const int BaseTrackView::NARROW_WIDTH = 85;
-const int BaseTrackView::WIDE_WIDTH = 120;
+const int BaseTrackView::NARROW_WIDTH = 65;
+const int BaseTrackView::WIDE_WIDTH = 95;
 
 QMap<long, BaseTrackView *> BaseTrackView::trackViews; // static map to quick lookup the views
 
@@ -46,6 +46,8 @@ BaseTrackView::BaseTrackView(MainController *mainController, long trackID) :
     connect(levelSlider, &QSlider::valueChanged, this, &BaseTrackView::setGain);
     connect(panSlider, &QSlider::valueChanged, this, &BaseTrackView::setPan);
     connect(boostSpinBox, &BoostSpinBox::boostChanged, this, &BaseTrackView::updateBoostValue);
+
+    peaksDbLabel->installEventFilter(this);
 
     // add in static map
     BaseTrackView::trackViews.insert(trackID, this);
@@ -106,6 +108,10 @@ void BaseTrackView::createLayoutStructure()
     levelSlider->setValue(100);
     levelSlider->setTickPosition(QSlider::NoTicks);
 
+    peaksDbLabel = new QLabel();
+    peaksDbLabel->setObjectName(QStringLiteral("peaksDbLabel"));
+    peaksDbLabel->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum));
+
     muteButton = new QPushButton();
     muteButton->setObjectName(QStringLiteral("muteButton"));
     muteButton->setEnabled(true);
@@ -132,8 +138,15 @@ void BaseTrackView::createLayoutStructure()
     secondaryChildsLayout->addLayout(muteSoloLayout);
     secondaryChildsLayout->addWidget(boostSpinBox, 0, Qt::AlignCenter);
 
+    sliderPeakLayout = new QVBoxLayout();
+    sliderPeakLayout->setSpacing(1);
+    sliderPeakLayout->setContentsMargins(0, 0, 0, 0);
+
+    sliderPeakLayout->addWidget(levelSlider);
+    sliderPeakLayout->addWidget(peaksDbLabel, 0, Qt::AlignCenter);
+
     mainLayout->addLayout(panWidgetsLayout, 0, 0, 1, 2);
-    mainLayout->addWidget(levelSlider, 1, 0);
+    mainLayout->addLayout(sliderPeakLayout, 1, 0, 1, 1, Qt::AlignBottom);
     mainLayout->addLayout(secondaryChildsLayout, 1, 1, 1, 1, Qt::AlignBottom);
 
     translateUI();
@@ -219,6 +232,8 @@ void BaseTrackView::updateGuiElements()
     auto peak = mainController->getTrackPeak(getTrackID());
     if (peak.getMaxPeak() > maxPeak.getMaxPeak()) {
         maxPeak.update(peak);
+        double db = Utils::linearToDb(maxPeak.getMaxPeak());
+        peaksDbLabel->setText(QString::number(db, 'f', 0));
     }
 
     // update the track peaks
@@ -268,10 +283,14 @@ void BaseTrackView::updateStyleSheet()
 
     style()->unpolish(levelSlider);
     style()->polish(levelSlider);
+
     levelSlider->updateStyleSheet();
 
     style()->unpolish(panSlider);
     style()->polish(panSlider);
+
+    style()->unpolish(peaksDbLabel);
+    style()->polish(peaksDbLabel);
 
     style()->unpolish(muteButton);
     style()->polish(muteButton);
@@ -307,6 +326,22 @@ void BaseTrackView::setPeaks(float peakLeft, float peakRight, float rmsLeft, flo
 {
     levelSlider->setPeak(peakLeft, peakRight, rmsLeft, rmsRight);
 }
+
+
+// event filter used to handle double clicks
+bool BaseTrackView::eventFilter(QObject *source, QEvent *ev)
+{
+    if (source == peaksDbLabel && ev->type() == QEvent::MouseButtonRelease) {
+        maxPeak.zero();
+        peaksDbLabel->setText("");
+        return true;
+    }
+    // --------------
+    if (ev->type() == QEvent::MouseMove && source == levelSlider)
+        update();
+    return QWidget::eventFilter(source, ev);
+}
+
 
 BaseTrackView::~BaseTrackView()
 {
