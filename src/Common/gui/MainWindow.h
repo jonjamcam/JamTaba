@@ -21,7 +21,7 @@ class ChatPanel;
 class InactivityDetector;
 class LocalTrackGroupView;
 class CameraFrameGrabber;
-class VideoWidget;
+//class VideoWidget;
 class BusyDialog;
 class LooperWindow;
 class UsersColorsPool;
@@ -193,7 +193,7 @@ protected:
 
     QCamera *camera;
     CameraFrameGrabber *videoFrameGrabber;
-    VideoWidget *cameraView;
+    //VideoWidget *cameraView;
     QComboBox *cameraCombo;
     QVBoxLayout *cameraLayout;
     QString preferredCameraName;
@@ -301,9 +301,9 @@ private slots:
 
     void updateUserNameLineEditToolTip();
 
-    void changeCameraStatus(bool activated);
+    //void changeCameraStatus(bool activated);
 
-    void selectNewCamera(int cameraIndex);
+    //void selectNewCamera(int cameraIndex);
 
     void handleUserLeaving(const QString &userFullName);
     void handleUserEntering(const QString &userName);
@@ -401,7 +401,7 @@ private:
 
     void setCameraComboVisibility(bool show);
 
-    void initializeCamera(const QString &cameraDeviceName);
+    //void initializeCamera(const QString &cameraDeviceName);
 
     void initializeLoginService();
     void initializeLocalInputChannels(const persistence::LocalInputTrackSettings &localInputSettings);
@@ -420,7 +420,7 @@ private:
 
     void initializeGuiRefreshTimer();
 
-    void initializeCameraWidget();
+    //void initializeCameraWidget();
 
     QCamera::FrameRateRange getBestSupportedFrameRate() const;
     QSize getBestCameraResolution(const QList<QSize> resolutions) const;

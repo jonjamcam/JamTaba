@@ -51,7 +51,7 @@
 #include <QToolTip>
 #include <QTime>
 
-const QSize MainWindow::MAIN_WINDOW_MIN_SIZE = QSize(1012, 695);
+const QSize MainWindow::MAIN_WINDOW_MIN_SIZE = QSize(1012, 520);
 const QString MainWindow::NIGHT_MODE_SUFFIX = "_nm";
 
 const quint8 MainWindow::DEFAULT_REFRESH_RATE = 10; // in Hertz
@@ -79,7 +79,7 @@ MainWindow::MainWindow(MainController *mainController, QWidget *parent) :
     mainController(mainController),
     camera(nullptr),
     videoFrameGrabber(nullptr),
-    cameraView(nullptr),
+    //cameraView(nullptr),
     cameraCombo(nullptr),
     cameraLayout(nullptr),
     bottomCollapsed(false),
@@ -118,7 +118,7 @@ MainWindow::MainWindow(MainController *mainController, QWidget *parent) :
     initializeTranslator();
     initializeThemeMenu();
     initializeMeteringOptions();
-    initializeCameraWidget();
+    //initializeCameraWidget();
     setupWidgets();
     setupSignals();
 
@@ -225,7 +225,7 @@ void MainWindow::setCameraComboVisibility(bool show)
     }
 }
 
-void MainWindow::initializeCamera(const QString &cameraDeviceName)
+/*void MainWindow::initializeCamera(const QString &cameraDeviceName)
 {
     if (camera) {
         camera->unload();
@@ -444,7 +444,7 @@ QImage MainWindow::pickCameraFrame() const
     }
 
     return QImage();
-}
+}*/
 
 void MainWindow::initializeMeteringOptions()
 {
@@ -542,8 +542,8 @@ void MainWindow::setTintColor(const QColor &color)
         group->setTintColor(color);
     }
 
-    if (cameraView)
-        cameraView->setIcon(IconFactory::createWebcamIcon(color));
+    //if (cameraView)
+    //    cameraView->setIcon(IconFactory::createWebcamIcon(color));
 
     if (ninjamWindow)
         ninjamWindow->setTintColor(color);
@@ -711,13 +711,13 @@ void MainWindow::showPeakMetersOnlyInLocalControls(bool showPeakMetersOnly)
 
     ui.localControlsCollapseButton->setChecked(showPeakMetersOnly);
 
-    if (cameraView) {
+    /*if (cameraView) {
         cameraCombo->setVisible(cameraView->isVisible() && cameraCombo->count() > 1);
         
         if (showPeakMetersOnly) {
             cameraCombo->setVisible(false);
         }
-    }
+    }*/
     
     updateLocalInputChannelsGeometry();
 
@@ -846,8 +846,8 @@ void MainWindow::removeChannelsGroup(int channelIndex)
             // TODO Refactoring: emit a signal 'localChannel removed' and catch this signal in NinjamController
             mainController->sendRemovedChannelMessage(channelIndex);
 
-            if (channel->isVideoChannel())
-                cameraView->activate(false); // deactivate the camera if the 2nd channel is deleted
+            //if (channel->isVideoChannel())
+            //    cameraView->activate(false); // deactivate the camera if the 2nd channel is deleted
 
             update();
         }
@@ -2663,7 +2663,7 @@ void MainWindow::showJamtabaCurrentVersion()
     auto text = tr("Jamtaba version is %1").arg(QApplication::applicationVersion());
     text += QString(" (%1 bits) \n\n").arg(QSysInfo::WordSize);
     text += QString("Qt: \t %1 \n").arg(qVersion());
-    text += QString("FFMpeg:\t %1 \n").arg(av_version_info());
+    //text += QString("FFMpeg:\t %1 \n").arg(av_version_info());
     text += QString("Vorbis:\t %1 \n").arg(vorbis_version_string());
     text += QString("MiniUpnP:\t %1 \n").arg(MINIUPNPC_VERSION);
     text += QString("Architecture:\t %1 \n").arg(QSysInfo::buildCpuArchitecture());

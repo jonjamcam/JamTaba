@@ -21,8 +21,8 @@
 
 const uint BaseTrackView::FADER_HEIGHT = 12;
 
-const int BaseTrackView::NARROW_WIDTH = 65;
-const int BaseTrackView::WIDE_WIDTH = 95;
+const int BaseTrackView::NARROW_WIDTH = 58;
+const int BaseTrackView::WIDE_WIDTH = 78;
 
 QMap<long, BaseTrackView *> BaseTrackView::trackViews; // static map to quick lookup the views
 
@@ -157,7 +157,7 @@ void BaseTrackView::translateUI()
     labelPanL->setText(tr("L"));
     labelPanR->setText(tr("R"));
 
-    muteButton->setText(tr("M"));
+    muteButton->setText(tr("m"));
     soloButton->setText(tr("S"));
 
     boostSpinBox->updateToolTip();

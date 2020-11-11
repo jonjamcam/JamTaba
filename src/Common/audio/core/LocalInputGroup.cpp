@@ -35,7 +35,7 @@ LocalInputNode *LocalInputGroup::getInputNode(quint8 index) const
 void LocalInputGroup::mixGroupedInputs(SamplesBuffer &out)
 {
     for (auto inputTrack : groupedInputs) {
-        if (!inputTrack->isMuted()) {             // uncomment to NOT transmit muted channels
+        //if (!inputTrack->isMuted()) {             // uncomment to NOT transmit muted channels
                    auto lastBuffer = inputTrack->getLastBuffer();
                    if (lastBuffer.getChannels() == out.getChannels()) {
                        out.add(lastBuffer);
@@ -43,7 +43,7 @@ void LocalInputGroup::mixGroupedInputs(SamplesBuffer &out)
                    else {
                        out.add(inputTrack->getLastBufferMixedToMono());
                    }
-        }
+        //}
     }
 }
 

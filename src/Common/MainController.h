@@ -11,7 +11,7 @@
 #include "persistence/UsersDataCache.h"
 #include "audio/core/AudioMixer.h"
 #include "midi/MidiDriver.h"
-#include "video/FFMpegMuxer.h"
+//#include "video/FFMpegMuxer.h"
 #include "gui/chat/EmojiManager.h"
 
 class MainWindow;
@@ -336,7 +336,7 @@ public slots:
     void blockUserInChat(const QString &userNameToBlock);
     void unblockUserInChat(const QString &userNameToUnblock);
 
-    void processCapturedFrame(int frameID, const QImage &frame);
+    //void processCapturedFrame(int frameID, const QImage &frame);
 
     virtual void connectInNinjamServer(const ServerInfo &server);
 
@@ -382,7 +382,7 @@ protected:
 
     virtual void syncWithNinjamIntervalStart(uint intervalLenght);
 
-    FFMpegMuxer videoEncoder;
+    //FFMpegMuxer videoEncoder;
 
 private:
     void setAllTracksActivation(bool activated);
@@ -446,7 +446,7 @@ protected slots:
     // TODO move this slot to NinjamController
     virtual void handleNewNinjamInterval();
 
-    void requestCameraFrame(int intervalPosition);
+    //void requestCameraFrame(int intervalPosition);
 
 };
 

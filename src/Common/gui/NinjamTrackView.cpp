@@ -505,7 +505,7 @@ void NinjamTrackView::setEstimatedChunksPerInterval(int estimatedChunks)
 void NinjamTrackView::setDownloadedChunksDisplayVisibility(bool visible)
 {
     chunksDisplay->reset();
-    chunksDisplay->setVisible(visible);
+    //chunksDisplay->setVisible(visible);
 }
 
 void NinjamTrackView::setChannelName(const QString &name)
@@ -595,7 +595,7 @@ void NinjamTrackView::resizeEvent(QResizeEvent *ev)
 
 void NinjamTrackView::updateExtraWidgetsVisibility()
 {
-    bool showExtraWidgets = orientation == Qt::Horizontal || height() >= 260; // hide hide Low cut button and gain spinbox if the height is small (VST/AU plugin small window with camera activated);
+    bool showExtraWidgets = orientation == Qt::Horizontal || height() >= 200; // hide hide Low cut button and gain spinbox if the height is small (VST/AU plugin small window with camera activated);
 
     mainLayout->setVerticalSpacing(showExtraWidgets ? 6 : 3);
 
