@@ -18,10 +18,10 @@ JamTaba is builded using **Qt framework**. We are using Qt for GUI, threads, soc
 JamTaba is using some libraries: [portaudio](http://www.portaudio.com/), [rtmidi](https://www.music.mcgill.ca/~gary/rtmidi/), [minimp3](http://keyj.emphy.de/minimp3/), [libvorbis and libogg](http://www.vorbis.com/). We are distributing **pre compiled static libs** just for convenience (see more details in the next sections), but feel free to compile the libs yourself!
 
 ### Ubuntu Linux
-On Ubuntu Linux, run the following command to install a missing dependency for Qt 5 Websockets and Qt 5 Widgets:
+On Ubuntu Linux, run the following command to install a missing dependency for Qt 5 Websockets:
 
 ```
-sudo apt install libqt5websockets5 libqt5widgets5
+sudo apt install libqt5websockets5
 ```
 
 ### IMPORTANT FOR WINDOWS if you will use the pre compiled libs (recommended):
@@ -48,7 +48,7 @@ The library **portaudio** was **pre compiled** in windows using **only the ASIO 
 ## Compiling JamTaba Standalone
 
 - Download and install [Qt](http://www.qt.io/download-open-source/). The Qt installer will install the **Qt Framework** and the **QtCreator**, the Qt IDE.
-- Download [VST SDK](https://www.dropbox.com/s/9lxowvn7k3bfkf1/VST_SDK.zip?dl=0)
+- Download [VST SDK](http://www.steinberg.net/en/company/developers.html)
 - Unpack the VST SDK content inside a **VST_SDK** folder (you need create this folder) in JamTaba source code path. After this you have something like that:
 ```
 [JamTaba source code folder in your hard disk]
