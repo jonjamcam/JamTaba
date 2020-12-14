@@ -197,7 +197,7 @@ void JamRecorder::appendLocalUserAudio(const QByteArray &encodedAudio, quint8 ch
     interval.appendEncodedData(encodedAudio);
 }
 
-void JamRecorder::appendLocalUserVideo(const QByteArray &encodedVideo, bool isFirstPartOfInterval)
+/*void JamRecorder::appendLocalUserVideo(const QByteArray &encodedVideo, bool isFirstPartOfInterval)
 {
     if (!running) {
         qCritical() << "Illegal state! Recorder is not running!";
@@ -225,7 +225,7 @@ void JamRecorder::appendLocalUserVideo(const QByteArray &encodedVideo, bool isFi
     }
 
     videoInterval.appendEncodedData(encodedVideo);
-}
+}*/
 
 void JamRecorder::addRemoteUserAudio(const QString &userName, const QByteArray &encodedAudio, quint8 channelIndex)
 {
@@ -241,7 +241,7 @@ void JamRecorder::addRemoteUserAudio(const QString &userName, const QByteArray &
     jam->addAudioFile(userName, channelIndex, audioFilePath, intervalIndex);
 }
 
-void JamRecorder::addRemoteUserVideo(const QString &userName, const QByteArray &encodedVideo)
+/*void JamRecorder::addRemoteUserVideo(const QString &userName, const QByteArray &encodedVideo)
 {
     if (!running) {
         qCritical() << "Illegal state! Recorder is not running!";
@@ -252,7 +252,7 @@ void JamRecorder::addRemoteUserVideo(const QString &userName, const QByteArray &
     QString videoFileName = buildVideoFileName(userName, videoInterval, "264");
     QString videoFilePath = jamMetadataWritter->getVideoAbsolutePath(videoFileName);
     QtConcurrent::run(this, &JamRecorder::writeEncodedFile, encodedVideo, videoFilePath);
-}
+}*/
 
 void JamRecorder::startRecording(const QString &localUser, const QDir &recordBaseDir, int bpm, int bpi, int sampleRate)
 {

@@ -6,9 +6,9 @@
 #include <QTranslator>
 #include <QMainWindow>
 #include <QMessageBox>
-#include <QCamera>
-#include <QCameraInfo>
-#include <QVideoFrame>
+//#include <QCamera>
+//#include <QCameraInfo>
+//#include <QVideoFrame>
 #include <QComboBox>
 
 class PreferencesDialog;
@@ -107,9 +107,9 @@ public:
 
     virtual TextEditorModifier *createTextEditorModifier() = 0;
 
-    QImage pickCameraFrame() const;
+    //QImage pickCameraFrame() const;
 
-    bool cameraIsActivated() const;
+    //bool cameraIsActivated() const;
 
     void closeAllFloatingWindows();
 
@@ -191,12 +191,12 @@ protected:
 
     static const QSize MAIN_WINDOW_MIN_SIZE;
 
-    QCamera *camera;
+    /*QCamera *camera;
     CameraFrameGrabber *videoFrameGrabber;
-    //VideoWidget *cameraView;
+    VideoWidget *cameraView;
     QComboBox *cameraCombo;
     QVBoxLayout *cameraLayout;
-    QString preferredCameraName;
+    QString preferredCameraName;*/
 
     QColor tintColor;
 
@@ -399,7 +399,7 @@ private:
 
     static bool jamRoomLessThan(const login::RoomInfo &r1, const login::RoomInfo &r2);
 
-    void setCameraComboVisibility(bool show);
+    //void setCameraComboVisibility(bool show);
 
     //void initializeCamera(const QString &cameraDeviceName);
 
@@ -422,8 +422,8 @@ private:
 
     //void initializeCameraWidget();
 
-    QCamera::FrameRateRange getBestSupportedFrameRate() const;
-    QSize getBestCameraResolution(const QList<QSize> resolutions) const;
+    //QCamera::FrameRateRange getBestSupportedFrameRate() const;
+    // getBestCameraResolution(const QList<QSize> resolutions) const;
 
     void updateUserNameLabel();
 

@@ -206,9 +206,10 @@ void ChatPanel::setItemCountryDetails(QTreeWidgetItem *item, const geo::Location
 
     auto countryCollumn = 1;
 
-    item->setIcon(countryCollumn, icon);
+    //item->setIcon(countryCollumn, icon); //show puclic chat user flag
     //item->setText(countryCollumn, location.countryName);
-    item->setText(countryCollumn, location.getCountryName());
+    item->setText(countryCollumn, location.getCountryCode());
+    item->setToolTip(countryCollumn, location.getRegionName() + ", " + location.getCountryName());
 }
 
 void ChatPanel::setConnectedUserBlockedStatus(const QString &userFullName, bool blocked)
@@ -380,9 +381,10 @@ void ChatPanel::setInputsStatus(bool enabled)
 
 void ChatPanel::setTopicMessage(const QString &topic)
 {
-    ui->topicLabel->setText(topic);
+    ui->topicLabel->setText("");
+    ui->topicLabel->setToolTip(topic);
 
-    ui->topicLabel->setVisible(!topic.isEmpty());
+    ui->topicLabel->setVisible(true); // (!topic.isEmpty())
 }
 
 void ChatPanel::changeEvent(QEvent *e)
@@ -455,7 +457,7 @@ void ChatPanel::confirmVote()
 
 void ChatPanel::addChordProgressionConfirmationMessage(const ChordProgression &progression)
 {
-    QString buttonText = tr("Use/load the chords above");
+    QString buttonText = tr("Load chords above");
     QPushButton *chordProgressionButton = new ChordProgressionConfirmationButton(buttonText,
                                                                                  progression);
     chordProgressionButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);

@@ -281,10 +281,10 @@ void NinjamTrackView::setChannelMode(NinjamTrackNode::ChannelMode mode)
     }
 }
 
-bool NinjamTrackView::isVideoChannel() const
+/*bool NinjamTrackView::isVideoChannel() const
 {
     return 0; //instrumentsButton->getSelectedIcon() == static_cast<int>(InstrumentIndex::Video); //REVISAR
-}
+}*/
 
 qint8 NinjamTrackView::guessInstrumentIcon() const
 {

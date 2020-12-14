@@ -98,5 +98,12 @@ int PerformanceMonitor::getBatteryUsed()
 
     int life = status.BatteryLifePercent; //if value is 255 that means unknown
 
+        if (life != 255) life = -life; // default as negative meaning discharging
+
+    if (status.ACLineStatus == 1) // charging
+        life = abs(life); //positive
+
+    //qDebug() << life;
+
 return life;
 }

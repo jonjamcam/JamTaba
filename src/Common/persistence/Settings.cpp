@@ -266,8 +266,8 @@ void AudioSettings::read(const QJsonObject &in)
     // ensure vorbis quality is in accepted range
     if (encodingQuality < vorbis::EncoderQualityLow)
         encodingQuality = vorbis::EncoderQualityLow;
-    else if(encodingQuality > vorbis::EncoderQualityHigh)
-        encodingQuality = vorbis::EncoderQualityHigh;
+    else if(encodingQuality > vorbis::EncoderQualityMaximum)
+        encodingQuality = vorbis::EncoderQualityMaximum;
 
     qCDebug(jtSettings) << "AudioSettings: sampleRate " << sampleRate
                         << "; bufferSize " << bufferSize

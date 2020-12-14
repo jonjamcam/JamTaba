@@ -10,11 +10,11 @@ ChatPanel #chatText:!focus
 }
 
 
-#topicLabel
+/*#topicLabel
 {
     color: black;
     background: rgb(110, 110, 110);
-}
+}*/
 
 /* ChatMessagePanel is the widget used to show ONE chat message
 ----------------------------------------------------------------*/

@@ -668,8 +668,8 @@ QString NinjamController::getUniqueKeyForChannel(const UserChannel &channel,
 
 bool NinjamController::userIsBot(const QString userName) const
 {
-    /*if (mainController)
-        return mainController->getBotNames().contains(userName);*/ // bot inside ninjam tracks
+    if (mainController)
+        return mainController->getBotNames().contains(userName); // bot inside ninjam tracks
     return false;
 }
 

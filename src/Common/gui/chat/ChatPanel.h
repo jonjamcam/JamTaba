@@ -216,7 +216,7 @@ public:
     {
         setObjectName("voteButton");
 
-        QString label = tr("Vote - change %1 to %2 ").arg(voteType).arg(QString::number(voteValue));
+        QString label = tr("Change %1 to %2").arg(voteType).arg(QString::number(voteValue));
         setText(label);
 
         QTimer::singleShot(expireTime * 1000, this, SLOT(hide()));

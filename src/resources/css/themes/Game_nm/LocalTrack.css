@@ -90,6 +90,7 @@ LocalTrackViewStandalone
 }
 
 #xmitButton[preparing="true"],
+#xmitButton[preparing="true"]:hover:checked,
 #voiceChatButton:checked[blinking="true"]
 {
     background-color: rgb(180, 180, 20);

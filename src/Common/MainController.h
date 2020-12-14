@@ -246,8 +246,8 @@ public:
 
     void saveEncodedAudio(const QString &userName, quint8 channelIndex,
                           const QByteArray &encodedAudio);
-    void saveEncodedVideo(const QString &userName,
-                          const QByteArray &encodedVideo);
+    //void saveEncodedVideo(const QString &userName,
+    //                      const QByteArray &encodedVideo);
 
     AbstractMp3Streamer *getRoomStreamer() const;
 
@@ -415,9 +415,9 @@ private:
 
     int lastInputTrackID;     // used to generate a unique key/ID for each input track
 
-    const static quint8 CAMERA_FPS;
+    //const static quint8 CAMERA_FPS;
 
-    bool canGrabNewFrameFromCamera() const;
+    //bool canGrabNewFrameFromCamera() const;
 
     quint64 lastFrameTimeStamp;
 

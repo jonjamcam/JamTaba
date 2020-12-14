@@ -160,7 +160,7 @@ private:
     static const QString LOGIN_SERVER_URL;
     //static const QString VERSION_SERVER_URL;
 
-    static const int REFRESH_PERIOD = 20000;
+    static const int REFRESH_PERIOD = 60000;
     QTimer *refreshTimer;
 
     void handleJson(const QString &json);

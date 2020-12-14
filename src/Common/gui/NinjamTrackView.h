@@ -43,7 +43,7 @@ public:
 
     void setTintColor(const QColor &color) override;
 
-    bool isVideoChannel() const;
+    //bool isVideoChannel() const;
 
     static void setNetworkUsageUpdatePeriod(quint32 periodInMilliseconds);
 

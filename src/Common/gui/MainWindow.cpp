@@ -38,7 +38,7 @@
 #include "ninjam/client/Types.h"
 
 // to get versions
-#include "libavutil/avutil.h"
+//#include "libavutil/avutil.h"
 #include "vorbis/codec.h"
 #include "miniupnpc.h"
 
@@ -77,11 +77,11 @@ using audio::AbstractMp3Streamer;
 MainWindow::MainWindow(MainController *mainController, QWidget *parent) :
     QMainWindow(parent),
     mainController(mainController),
-    camera(nullptr),
+    /*camera(nullptr),
     videoFrameGrabber(nullptr),
-    //cameraView(nullptr),
+    cameraView(nullptr),
     cameraCombo(nullptr),
-    cameraLayout(nullptr),
+    cameraLayout(nullptr),*/
     bottomCollapsed(false),
     busyDialog(new BusyDialog()),
     bpmVotingExpirationTimer(nullptr),
@@ -202,7 +202,7 @@ void MainWindow::setupMainTabCornerWidgets()
     ui.contentTabWidget->setCornerWidget(frame);
 }
 
-void MainWindow::setCameraComboVisibility(bool show)
+/*void MainWindow::setCameraComboVisibility(bool show)
 {
     if (!cameraCombo)
         return;
@@ -225,7 +225,7 @@ void MainWindow::setCameraComboVisibility(bool show)
     }
 }
 
-/*void MainWindow::initializeCamera(const QString &cameraDeviceName)
+void MainWindow::initializeCamera(const QString &cameraDeviceName)
 {
     if (camera) {
         camera->unload();
@@ -673,7 +673,7 @@ void MainWindow::initialize()
         setTheme(themeName);
     }
 
-    showBusyDialog(tr("Loading rooms list ..."));
+    //showBusyDialog(tr("Loading rooms list ..."));
 
     doWindowInitialization();
 
@@ -709,6 +709,7 @@ void MainWindow::showPeakMetersOnlyInLocalControls(bool showPeakMetersOnly)
         channel->setPeakMeterMode(showPeakMetersOnly);
     }
 
+    ui.localControlsCollapseButton->setVisible(showPeakMetersOnly);
     ui.localControlsCollapseButton->setChecked(showPeakMetersOnly);
 
     /*if (cameraView) {
@@ -1132,13 +1133,13 @@ bool MainWindow::jamRoomLessThan(const login::RoomInfo &r1, const login::RoomInf
 
 void MainWindow::detachMainController()
 {
-    //if (videoFrameGrabber) { // necessary to avoid crash VST host when Jamtaba is removed
-        //disconnect(videoFrameGrabber, &CameraFrameGrabber::frameAvailable, this, nullptr);
-    //}
+    /*if (videoFrameGrabber) { // necessary to avoid crash VST host when Jamtaba is removed
+        disconnect(videoFrameGrabber, &CameraFrameGrabber::frameAvailable, this, nullptr);
+    }
 
     if (camera) { // necessary to avoid crash VST host when Jamtaba is removed
         camera->unload();
-    }
+    }*/
 
     mainController = nullptr;
 }
@@ -2122,22 +2123,25 @@ void MainWindow::timerEvent(QTimerEvent *)
 
         if (performanceMonitorLabel) {
 
-                   auto memmoryUsed = performanceMonitor->getMemmoryUsed();
-                   auto batteryUsed = performanceMonitor->getBatteryUsed();
+            auto memmoryUsed = performanceMonitor->getMemmoryUsed();
+            auto batteryUsed = performanceMonitor->getBatteryUsed();
 
-                   bool showMemmory = memmoryUsed > 60; //memory meter only active (as an alert) if RAM usage is > 60%
-                   bool showBattery = batteryUsed < 255; //Battery meter active only if battery is available
+            bool showMemmory = memmoryUsed > 60; //memory meter only active (as an alert) if RAM usage is > 60%
+            bool showBattery = batteryUsed != 255; //Battery meter active only if battery is available
 
-                   QString string;
-                       string += QString("CPU: %1%").arg(performanceMonitor->getCpuUsage());
-                   if (showMemmory)
-                       string += QString(" MEM: %1%").arg(performanceMonitor->getMemmoryUsed());
+            QString string;
+                string += QString("CPU: %1%").arg(performanceMonitor->getCpuUsage());
+            if (showMemmory)
+                string += QString(" MEM: %1%").arg(memmoryUsed);
 
-                   if (showBattery)
-                       string += QString(" BAT: %1%").arg(performanceMonitor->getBatteryUsed());
+            if (showBattery) {
+                string += QString(" BAT: %1%").arg(abs(batteryUsed));
+                if (batteryUsed > 0) string += QString("↑");
+                else string += QString("↓");
+            }
 
-                   performanceMonitorLabel->setText(string);
-                   performanceMonitorLabel->setToolTip(" Current Time is " + QTime::currentTime().toString("h:mm"));
+            performanceMonitorLabel->setText(string);
+            performanceMonitorLabel->setToolTip("Current Time is " + QTime::currentTime().toString("h:mm"));
 
                    //performanceMonitorLabel->setVisible(showMemmory || showBattery);
 

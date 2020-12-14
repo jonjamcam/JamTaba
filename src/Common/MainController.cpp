@@ -398,13 +398,13 @@ void MainController::enqueueVideoDataToUpload(const QByteArray &encodedData, boo
         ninjamService->sendIntervalPart(videoIntervalToUpload->getGUID(), videoIntervalToUpload->getData(), false); // is not the last part of interval
         videoIntervalToUpload->clear();
     }
-
+/*
     // OLD -> disabling the video recording
     if (settings.isSaveMultiTrackActivated() && isPlayingInNinjamRoom()) {
     for (auto jamRecorder : getActiveRecorders()) {
     jamRecorder->appendLocalUserVideo(encodedData, isFirstPart);
    }
-   }
+   }*/
 }
 
 int MainController::getMaxAudioChannelsForEncoding(uint trackGroupIndex) const
@@ -480,7 +480,7 @@ void MainController::saveEncodedAudio(const QString &userName, quint8 channelInd
             jamRecorder->addRemoteUserAudio(userName, encodedAudio, channelIndex);
     }
 }
-
+/*
 // this is called when a new ninjam interval is received and the 'record multi track' option is enabled
 void MainController::saveEncodedVideo(const QString &userName, const QByteArray &encodedVideo)
 {
@@ -488,7 +488,7 @@ void MainController::saveEncodedVideo(const QString &userName, const QByteArray 
         for (auto jamRecorder : getActiveRecorders())
             jamRecorder->addRemoteUserVideo(userName, encodedVideo);
     }
-}
+}*/
 
 void MainController::removeAllInputTracks()
 {
