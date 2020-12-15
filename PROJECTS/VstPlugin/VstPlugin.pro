@@ -5,7 +5,7 @@ include(../qtwinmigrate/src/qtwinmigrate.pri)
 
 QTPLUGIN += dsengine # necessary to use QCamera inside VST plugin
 
-TARGET = "JamtabaC_VST2"  #using this name (with a '2' suffix) to match the previons JTBA versions and avoid duplicated plugin in user machines
+TARGET = "JamtabaM_VST2"  #using this name (with a '2' suffix) to match the previons JTBA versions and avoid duplicated plugin in user machines
 TEMPLATE = lib
 CONFIG += shared
 
@@ -91,7 +91,8 @@ win32 {
     CONFIG(debug, debug|release):   LIBS += -L$(QTDIR)\plugins\mediaservice\ -lqtfreetyped
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    LIBS += -L$$PWD/../../libs/$$LIBS_PATH -lminimp3 -lvorbisfile -lvorbis -logg -lx264 -lavcodec -lavutil -lavformat -lswscale -lswresample -lstackwalker -lminiupnpc
+    #LIBS += -L$$PWD/../../libs/$$LIBS_PATH -lminimp3 -lvorbisfile -lvorbis -logg -lx264 -lavcodec -lavutil -lavformat -lswscale -lswresample -lstackwalker -lminiupnpc
+    LIBS += -L$$PWD/../../libs/$$LIBS_PATH -lminimp3 -lvorbisfile -lvorbis -logg -lstackwalker -lminiupnpc
 
     LIBS += -lIPHlpApi # used by miniupnp lib
     LIBS += -lSecur32   # used by libx264

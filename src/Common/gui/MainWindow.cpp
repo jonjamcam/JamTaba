@@ -106,7 +106,7 @@ MainWindow::MainWindow(MainController *mainController, QWidget *parent) :
     ui.labelYourControls->setVisible(false);
     ui.localControlsCollapseButton->setVisible(false);
 
-    setWindowTitle(QString("JamTaba Classic")); // + VERSION + " %1 bits)").arg(QSysInfo::WordSize));
+    setWindowTitle(QString("JamTaba Mini")); // + VERSION + " %1 bits)").arg(QSysInfo::WordSize));
 
     initializeLoginService();
     initializeMainTabWidget();
