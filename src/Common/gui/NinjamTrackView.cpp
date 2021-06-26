@@ -71,24 +71,24 @@ NinjamTrackView::NinjamTrackView(MainController *mainController, long trackID) :
     voiceChatIcon = IconFactory::createVoiceChatIcon();
 }
 
-/*void NinjamTrackView::setPeaks(float peakLeft, float peakRight, float rmsLeft, float rmsRight)
+void NinjamTrackView::setPeaks(float peakLeft, float peakRight, float rmsLeft, float rmsRight)
 {
     BaseTrackView::setPeaks(peakLeft, peakRight, rmsLeft, rmsRight);
 
     static const float AUTO_MUTE_THRESHOLD = 1; // 0 dB RMS
-    static const float AUTO_LEVEL_THRESHOLD = 0.125893; // -18 db  *** 0.501187; // -6db *** 0.251189; // -12 db RMS ***
     static const float AUTO_BOOST_THRESHOLD = 0.707946; // -3 db RMS
+    /*static const float AUTO_LEVEL_THRESHOLD = 0.125893; // -18 db  *** 0.501187; // -6db *** 0.251189; // -12 db RMS ***
 
-    if (rmsLeft >= AUTO_BOOST_THRESHOLD || rmsRight >= AUTO_BOOST_THRESHOLD) {
-        boostSpinBox->setToMin(); // auto lower boost gain by -12db  when rms peaks are high
-    }
     if (rmsLeft >= AUTO_LEVEL_THRESHOLD || rmsRight >= AUTO_LEVEL_THRESHOLD) {
         levelSlider->setValue(levelSlider->value() - 2); // auto lower fader gain by decrementally when rms peaks are high
+    }*/
+    if (rmsLeft >= AUTO_BOOST_THRESHOLD || rmsRight >= AUTO_BOOST_THRESHOLD) {
+        boostSpinBox->setToMin(); // auto lower boost gain by -12db  when rms peaks are high
     }
     if (rmsLeft >= AUTO_MUTE_THRESHOLD || rmsRight >= AUTO_MUTE_THRESHOLD) {
         muteButton->click(); // auto mute when rms peaks are very high
     }
-}*/
+}
 
 void NinjamTrackView::paintEvent(QPaintEvent *ev)
 {
@@ -281,10 +281,11 @@ void NinjamTrackView::setChannelMode(NinjamTrackNode::ChannelMode mode)
     }
 }
 
-/*bool NinjamTrackView::isVideoChannel() const
+bool NinjamTrackView::isVideoChannel() const
 {
-    return 0; //instrumentsButton->getSelectedIcon() == static_cast<int>(InstrumentIndex::Video); //REVISAR
-}*/
+    //return instrumentsButton->getSelectedIcon() == static_cast<int>(InstrumentIndex::Video);
+    return channelNameLabel->text() == "Video";
+}
 
 qint8 NinjamTrackView::guessInstrumentIcon() const
 {
@@ -505,7 +506,7 @@ void NinjamTrackView::setEstimatedChunksPerInterval(int estimatedChunks)
 void NinjamTrackView::setDownloadedChunksDisplayVisibility(bool visible)
 {
     chunksDisplay->reset();
-    //chunksDisplay->setVisible(visible);
+    chunksDisplay->setVisible(visible);
 }
 
 void NinjamTrackView::setChannelName(const QString &name)
@@ -595,14 +596,14 @@ void NinjamTrackView::resizeEvent(QResizeEvent *ev)
 
 void NinjamTrackView::updateExtraWidgetsVisibility()
 {
-    bool showExtraWidgets = orientation == Qt::Horizontal || height() >= 200; // hide hide Low cut button and gain spinbox if the height is small (VST/AU plugin small window with camera activated);
+    bool showExtraWidgets = orientation == Qt::Horizontal || height() >= 260; // hide hide receive button and gain spinbox if the height is small (VST/AU plugin small window with camera activated);
 
     mainLayout->setVerticalSpacing(showExtraWidgets ? 6 : 3);
 
     //channelNameLabel->setVisible(showExtraWidgets);
     //networkUsageLabel->setVisible(showExtraWidgets);
-    //buttonReceive->setVisible(showExtraWidgets);
     //instrumentsButton->setVisible(showExtraWidgets);
-    buttonLowCut->setVisible(showExtraWidgets);
+    //buttonLowCut->setVisible(showExtraWidgets);
+    buttonReceive->setVisible(showExtraWidgets);
     boostSpinBox->setVisible(showExtraWidgets);
 }

@@ -261,7 +261,7 @@ void AudioSettings::read(const QJsonObject &in)
     audioInputDevice = getValueFromJson(in, "audioInputDevice", QString(""));
     audioOutputDevice = getValueFromJson(in, "audioOutputDevice", QString(""));
 
-    encodingQuality = getValueFromJson(in, "encodingQuality", vorbis::EncoderQualityNormal); // using normal quality as fallback value.
+    encodingQuality = getValueFromJson(in, "encodingQuality", vorbis::EncoderQualityHigh); // using HIGH quality as fallback value.
 
     // ensure vorbis quality is in accepted range
     if (encodingQuality < vorbis::EncoderQualityLow)

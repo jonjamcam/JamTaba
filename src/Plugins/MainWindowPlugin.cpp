@@ -9,7 +9,7 @@
 
 #include <QDesktopWidget>
 
-const QSize MainWindowPlugin::PLUGIN_WINDOW_MIN_SIZE = QSize(990, 520);
+const QSize MainWindowPlugin::PLUGIN_WINDOW_MIN_SIZE = QSize(990, 600);
 
 const quint32 MainWindowPlugin::ZOOM_STEP = 70;
 

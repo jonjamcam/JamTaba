@@ -2,7 +2,7 @@
 #include "geo/IpToLocationResolver.h"
 #include "MainController.h"
 #include "NinjamController.h"
-//#include "video/FFMpegDemuxer.h"
+#include "video/FFMpegDemuxer.h"
 #include "IconFactory.h"
 #include "ninjam/client/Service.h"
 #include "MainWindow.h"
@@ -13,8 +13,8 @@
 #include <QStackedLayout>
 #include <QtConcurrent>
 
-const uint NinjamTrackGroupView::MAX_WIDTH_IN_GRID_LAYOUT = 300;
-const uint NinjamTrackGroupView::MAX_HEIGHT_IN_GRID_LAYOUT = 165;
+const uint NinjamTrackGroupView::MAX_WIDTH_IN_GRID_LAYOUT = 350;
+const uint NinjamTrackGroupView::MAX_HEIGHT_IN_GRID_LAYOUT = 210;
 
 using controller::MainController;
 using controller::NinjamController;
@@ -26,9 +26,9 @@ NinjamTrackGroupView::NinjamTrackGroupView(MainController *mainController, long 
     TrackGroupView(nullptr),
     mainController(mainController),
     userIP(initialValues.getUserIP()),
-    tracksLayoutEnum(TracksLayout::VerticalLayout)
-    //videoFrameRate(10),
-    //intervalsWithoutReceiveVideo(0)
+    tracksLayoutEnum(TracksLayout::VerticalLayout),
+    videoFrameRate(10),
+    intervalsWithoutReceiveVideo(0)
 {
 
     // change the top panel layout to vertical (original is horizontal)
@@ -85,10 +85,10 @@ NinjamTrackGroupView::NinjamTrackGroupView(MainController *mainController, long 
     groupNameLabel->setStyleSheet(styleSheet);
 
     QIcon webcamIcon = IconFactory::createWebcamIcon(getTintColor());
-    //videoWidget = new VideoWidget(this, webcamIcon);
-    //videoWidget->setVisible(false); // video preview will be visible when the first received frame is decoded
+    videoWidget = new VideoWidget(this, webcamIcon);
+    videoWidget->setVisible(false); // video preview will be visible when the first received frame is decoded
 
-    /*connect(videoWidget, &VideoWidget::visibilityChanged, [=](bool visible) {
+    connect(videoWidget, &VideoWidget::visibilityChanged, [=](bool visible) {
 
         if (visible) {
             if (tracksLayoutEnum == TracksLayout::GridLayout)
@@ -98,7 +98,7 @@ NinjamTrackGroupView::NinjamTrackGroupView(MainController *mainController, long 
             else
                 setupHorizontalLayout();
         }
-    });*/
+    });
 
     //connect(mainController, &MainController::ipResolved, this, &NinjamTrackGroupView::updateGeoLocation);
     connect(mainController, SIGNAL(ipResolved(QString)), this, SLOT(updateGeoLocation(QString)));
@@ -108,15 +108,15 @@ NinjamTrackGroupView::NinjamTrackGroupView(MainController *mainController, long 
     connect(mainController, &MainController::userUnblockedInChat, this, &NinjamTrackGroupView::hideChatBlockIcon);
 
     auto ninjamController = mainController->getNinjamController();
-    //connect(ninjamController, &controller::NinjamController::startingNewInterval, this, &NinjamTrackGroupView::startVideoStream);
+    connect(ninjamController, &controller::NinjamController::startingNewInterval, this, &NinjamTrackGroupView::startVideoStream);
 
     setupVerticalLayout();
 }
 
-/*bool NinjamTrackGroupView::isShowingVideo() const
+bool NinjamTrackGroupView::isShowingVideo() const
 {
     return videoWidget && videoWidget->isVisible();
-}*/
+}
 
 QColor NinjamTrackGroupView::getTintColor() const
 {
@@ -126,10 +126,10 @@ QColor NinjamTrackGroupView::getTintColor() const
     return trackViews.first()->getTintColor();
 }
 
-/*void NinjamTrackGroupView::addVideoInterval(const QByteArray &encodedVideoData)
+void NinjamTrackGroupView::addVideoInterval(const QByteArray &encodedVideoData)
 {
 
-     hide the video (2nd) channel
+    /* hide the video (2nd) channel
     if (trackViews.size() > 1) {
         auto audioChannel = getTracks<NinjamTrackView *>().at(0);
         auto videoChannel = getTracks<NinjamTrackView *>().at(1);
@@ -138,7 +138,7 @@ QColor NinjamTrackGroupView::getTintColor() const
 
             audioChannel->setToWide(); // when using video the audio channel is forced to wide
         }
-    }
+    }*/
 
     FFMpegDemuxer *videoDecoder = new FFMpegDemuxer(this, encodedVideoData);
     connect(videoDecoder, &FFMpegDemuxer::imagesDecoded, this, [=](QList<QImage> images, uint frameRate){
@@ -178,7 +178,7 @@ void NinjamTrackGroupView::updateVideoFrame(const QImage &frame)
     videoWidget->setVisible(true);
 
     intervalsWithoutReceiveVideo = 0;
-}*/
+}
 
 QString NinjamTrackGroupView::getUniqueName() const
 {
@@ -318,7 +318,7 @@ void NinjamTrackGroupView::setupGridLayout()
 {
     mainLayout->removeWidget(topPanel);
     mainLayout->removeItem(tracksLayout);
-    /*mainLayout->removeWidget(videoWidget);
+    mainLayout->removeWidget(videoWidget);
 
     auto topPanelRowSpan = videoWidget->isVisible() ? 1 : mainLayout->rowCount();
     auto topPanelCollumn = videoWidget->isVisible() ? 1 : 0;
@@ -330,7 +330,7 @@ void NinjamTrackGroupView::setupGridLayout()
     }
 
     auto tracksLayoutRow = videoWidget->isVisible() ? 1 : 0;
-    mainLayout->addLayout(tracksLayout, tracksLayoutRow, 1, 1, 1);*/
+    mainLayout->addLayout(tracksLayout, tracksLayoutRow, 1, 1, 1);
 
     resetMainLayoutStretch();
     mainLayout->setColumnStretch(0, 1); // video is streched
@@ -349,11 +349,11 @@ void NinjamTrackGroupView::setupHorizontalLayout()
 {
     mainLayout->removeWidget(topPanel);
     mainLayout->removeItem(tracksLayout);
-    //mainLayout->removeWidget(videoWidget);
+    mainLayout->removeWidget(videoWidget);
 
     mainLayout->addWidget(topPanel,    0, 0, 1, 1);
     mainLayout->addLayout(tracksLayout,      0, 1, 1, 1);
-    //mainLayout->addWidget(videoWidget, 0, 2, 1, 1);
+    mainLayout->addWidget(videoWidget, 0, 2, 1, 1);
 
     mainLayout->setSpacing(0);
 
@@ -372,15 +372,15 @@ void NinjamTrackGroupView::setupVerticalLayout()
 {
     mainLayout->removeWidget(topPanel);
     mainLayout->removeItem(tracksLayout);
-    /*mainLayout->removeWidget(videoWidget);
+    mainLayout->removeWidget(videoWidget);
 
-    if (videoWidget->isVisible()) {
+    /*if (videoWidget->isVisible()) {
         videoWidget->setEnabled(false);
     }*/
 
     mainLayout->addWidget(topPanel, 0, 0, 1, 1);
     mainLayout->addLayout(tracksLayout, 1, 0, 1, 1);
-    //mainLayout->addWidget(videoWidget, 2, 0, 1, 1);
+    mainLayout->addWidget(videoWidget, 2, 0, 1, 1);
 
     mainLayout->setSpacing(0);
 
@@ -484,7 +484,7 @@ void NinjamTrackGroupView::updateGuiElements()
     TrackGroupView::updateGuiElements();
     groupNameLabel->updateMarquee();
 
-    /* video
+    // video
     if (!decodedImages.isEmpty()) {
         quint64 now = QDateTime::currentMSecsSinceEpoch();
 
@@ -500,7 +500,7 @@ void NinjamTrackGroupView::updateGuiElements()
                 decodedImages.removeFirst(); // avoid show the last received frame forever
             }
         }
-    }*/
+    }
 }
 
 NinjamTrackGroupView::~NinjamTrackGroupView()

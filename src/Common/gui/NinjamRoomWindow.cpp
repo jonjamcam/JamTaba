@@ -534,10 +534,10 @@ void NinjamRoomWindow::resizeEvent(QResizeEvent *ev)
 
 }
 
-/*bool cameraSorter(NinjamTrackGroupView *track1, NinjamTrackGroupView *)
+bool cameraSorter(NinjamTrackGroupView *track1, NinjamTrackGroupView *)
 {
      return track1 && track1->isShowingVideo();
-}*/
+}
 
 void NinjamRoomWindow::reAddTrackGroups()
 {
@@ -546,9 +546,9 @@ void NinjamRoomWindow::reAddTrackGroups()
 
     auto itemsToAdd = trackGroups.values();
 
-    /*if (tracksLayout == TracksLayout::GridLayout) { // if layout is Grid reorder trackGroups to show active cams first
+    if (tracksLayout == TracksLayout::GridLayout) { // if layout is Grid reorder trackGroups to show active cams first
         qSort(itemsToAdd.begin(), itemsToAdd.end(), cameraSorter);
-    }*/
+    }
 
     for (auto trackGroup : itemsToAdd)
         addTrack(trackGroup);
@@ -761,7 +761,7 @@ void NinjamRoomWindow::setupSignals(controller::NinjamController* ninjamControll
 
     connect(ninjamPanel, &NinjamPanel::intervalShapeChanged, this, &NinjamRoomWindow::setNewIntervalShape);
 
-    //connect(mainController->getNinjamService(), &ninjam::client::Service::videoIntervalCompleted, this, &NinjamRoomWindow::setVideoInterval);
+    connect(mainController->getNinjamService(), &ninjam::client::Service::videoIntervalCompleted, this, &NinjamRoomWindow::setVideoInterval);
 
     connect(ui->chordsButton, &QPushButton::clicked, [=](){
 
@@ -782,7 +782,7 @@ void NinjamRoomWindow::showChordProgressionDialog(const ChordProgression &curren
     }
 }
 
-/*void NinjamRoomWindow::setVideoInterval(const User &user, const QByteArray &encodedVideoData)
+void NinjamRoomWindow::setVideoInterval(const User &user, const QByteArray &encodedVideoData)
 {
     auto group = trackGroups[user.getFullName()];
     if (group) {
@@ -794,7 +794,7 @@ void NinjamRoomWindow::showChordProgressionDialog(const ChordProgression &curren
             mainController->saveEncodedVideo(userName, encodedVideoData); //recording remote video streams
         }
     }
-}*/
+}
 
 void NinjamRoomWindow::handleBpiChanges()
 {

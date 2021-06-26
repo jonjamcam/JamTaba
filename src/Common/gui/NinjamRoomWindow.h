@@ -155,7 +155,7 @@ private slots:
     void deleteFloatingWindow();
 
     // video
-    //void setVideoInterval(const User &user, const QByteArray &encodedVideoData);
+    void setVideoInterval(const User &user, const QByteArray &encodedVideoData);
 
     // ninjam controller events
     void addChannel(const User &user, const UserChannel &channel, long channelID);
@@ -184,10 +184,10 @@ inline ChordProgressionCreationDialog *NinjamRoomWindow::getChordProgressionDial
     return chordProgressionDialog;
 }
 
-/*inline QList<NinjamTrackGroupView *> NinjamRoomWindow::getTrackGroups() const
+inline QList<NinjamTrackGroupView *> NinjamRoomWindow::getTrackGroups() const
 {
     return trackGroups.values();
-}*/
+}
 
 inline MetronomePanel *NinjamRoomWindow::getMetronomePanel() const
 {

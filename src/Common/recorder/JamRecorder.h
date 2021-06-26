@@ -227,7 +227,7 @@ public:
     void appendLocalUserAudio(const QByteArray &encodedAudio, quint8 channelIndex,
                               bool isFirstPartOfInterval);
 
-    //void appendLocalUserVideo(const QByteArray &encodedVideo, bool isFirstPartOfInterval);
+    void appendLocalUserVideo(const QByteArray &encodedVideo, bool isFirstPartOfInterval);
 
     void addRemoteUserAudio(const QString &userName, const QByteArray &encodedAudio, quint8 channelIndex);
     void addRemoteUserVideo(const QString &userName, const QByteArray &encodedVideo);

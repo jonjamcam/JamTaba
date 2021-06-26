@@ -43,7 +43,7 @@ public:
 
     void setTintColor(const QColor &color) override;
 
-    //bool isVideoChannel() const;
+    bool isVideoChannel() const;
 
     static void setNetworkUsageUpdatePeriod(quint32 periodInMilliseconds);
 
@@ -53,7 +53,7 @@ protected:
 
     QPoint getDbValuePosition(const QString &dbValueText, const QFontMetrics &metrics) const override;
 
-    //void setPeaks(float peakLeft, float peakRight, float rmsLeft, float rmsRight) override;
+    void setPeaks(float peakLeft, float peakRight, float rmsLeft, float rmsRight) override;
 
     void setupVerticalLayout() override;
     void resizeEvent(QResizeEvent *ev) override;

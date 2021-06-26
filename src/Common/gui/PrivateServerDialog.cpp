@@ -13,7 +13,7 @@ PrivateServerDialog::PrivateServerDialog(QWidget *parent, MainController *mainCo
 {
     ui->setupUi(this);
     ui->ServerList->setReadOnly(true);
-    //ui->ServerList->setPlainText(tr("Loading rooms, please wait..."));
+    ui->ServerList->setPlainText(tr("Loading cockos server list, please wait..."));
     man = new QNetworkAccessManager(this);
         QNetworkRequest request (QUrl("http://autosong.ninjam.com/serverlist.php"));
         reply = man->get(request);

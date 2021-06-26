@@ -116,7 +116,7 @@ bool JamTabaVSTPlugin::getEffectName(char *name)
 {
     if (!name)
         return false;
-    vst_strncpy(name, "JamTaba Mini", kVstMaxEffectNameLen);
+    vst_strncpy(name, "JamTaba Classic", kVstMaxEffectNameLen);
     return true;
 }
 

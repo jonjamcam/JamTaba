@@ -47,7 +47,7 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD dwReason, LPVOID /*lpvReserved*/)
 {
     static bool ownApplication = FALSE;
     if (dwReason == DLL_PROCESS_ATTACH) {
-        QApplication::setApplicationName("Jamtaba Mini");
+        QApplication::setApplicationName("Jamtaba Classic");
         QApplication::setApplicationVersion(APP_VERSION);
         QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling); // fixing issue https://github.com/elieserdejesus/JamTaba/issues/1216
 

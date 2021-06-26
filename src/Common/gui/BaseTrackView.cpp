@@ -21,8 +21,8 @@
 
 const uint BaseTrackView::FADER_HEIGHT = 12;
 
-const int BaseTrackView::NARROW_WIDTH = 58;
-const int BaseTrackView::WIDE_WIDTH = 78;
+const int BaseTrackView::NARROW_WIDTH = 65;
+const int BaseTrackView::WIDE_WIDTH = 95;
 
 QMap<long, BaseTrackView *> BaseTrackView::trackViews; // static map to quick lookup the views
 
@@ -79,7 +79,7 @@ void BaseTrackView::createLayoutStructure()
     mainLayout = new QGridLayout(this);
 
     panWidgetsLayout = new QHBoxLayout();
-    panWidgetsLayout->setSpacing(0);
+    panWidgetsLayout->setSpacing(3);
     panWidgetsLayout->setContentsMargins(0, 0, 0, 0);
 
     labelPanL = new QLabel();
@@ -157,7 +157,7 @@ void BaseTrackView::translateUI()
     labelPanL->setText(tr("L"));
     labelPanR->setText(tr("R"));
 
-    muteButton->setText(tr("m"));
+    muteButton->setText(tr("M"));
     soloButton->setText(tr("S"));
 
     boostSpinBox->updateToolTip();

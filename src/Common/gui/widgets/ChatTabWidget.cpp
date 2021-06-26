@@ -58,8 +58,8 @@ ChatTabWidget::ChatTabWidget(QWidget *parent) :
 
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    stackWidget->setMinimumWidth(150); // TODO Refactoring: remove these 'Magic Numbers'
-    stackWidget->setMaximumWidth(150);
+    stackWidget->setMinimumWidth(230); // TODO Refactoring: remove these 'Magic Numbers'
+    stackWidget->setMaximumWidth(250);
 }
 
 void ChatTabWidget::initialize(MainController *mainController, UsersColorsPool *colorsPool)
@@ -103,8 +103,7 @@ void ChatTabWidget::clear()
 
 void ChatTabWidget::retranslateUi()
 {
-    tabBar->setTabText(0, tr("Public"));
-    tabBar->setToolTip("");
+    tabBar->setTabText(0, tr("Public Chat"));
     if (mainChat)
         mainChat->setTopicMessage(tr("Public chat"));
 }
@@ -125,7 +124,7 @@ ChatPanel *ChatTabWidget::createMainChat(TextEditorModifier *textEditorModifier)
         return mainChat;
     }
 
-    tabBar->addTab(tr("Public")); // add main chat
+    tabBar->addTab(tr("Public Chat")); // add main chat
 
     auto botNames = mainController->getBotNames();
     auto emojiManager = mainController->getEmojiManager();
@@ -156,7 +155,7 @@ ChatPanel *ChatTabWidget::createNinjamServerChat(const QString &serverName, Text
     Q_ASSERT(!ninjamServerChat);
 
     // add ninjam main chat
-    auto index = tabBar->addTab("Ninjam"); // replaced 'serverName'
+    auto index = tabBar->addTab("Ninjam Chat"); // replaced 'serverName'
 
     auto botNames = mainController->getBotNames();
     auto emojiManager = mainController->getEmojiManager();
@@ -174,7 +173,6 @@ ChatPanel *ChatTabWidget::createNinjamServerChat(const QString &serverName, Text
     ninjamServerChat->setPreferredTranslationLanguage(mainController->getTranslationLanguage());
 
     tabBar->setCurrentIndex(index); // auto change the chat focus no ninjam chat when enter in a server
-    //tabBar->setToolTip(serverName);
 
     return ninjamServerChat;
 }

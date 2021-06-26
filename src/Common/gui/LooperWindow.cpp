@@ -354,7 +354,7 @@ void LooperWindow::handleNewMaxLayers(quint8 newMaxLayers)
     updateLayersVisibility(newMaxLayers);
 
     const static int minHeight = 150; // one layer
-    const static int maxHeight = 500; // 8 layers
+    const static int maxHeight = 600; // 8 layers
     const static int range = maxHeight - minHeight;
     int newHeight = static_cast<float>(newMaxLayers)/MAX_LOOP_LAYERS * range + minHeight;
     setMinimumHeight(newHeight);

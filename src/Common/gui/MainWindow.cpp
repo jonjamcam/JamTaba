@@ -38,7 +38,7 @@
 #include "ninjam/client/Types.h"
 
 // to get versions
-//#include "libavutil/avutil.h"
+#include "libavutil/avutil.h"
 #include "vorbis/codec.h"
 #include "miniupnpc.h"
 
@@ -51,11 +51,12 @@
 #include <QToolTip>
 #include <QTime>
 
-const QSize MainWindow::MAIN_WINDOW_MIN_SIZE = QSize(1012, 520);
+const QSize MainWindow::MAIN_WINDOW_MIN_SIZE = QSize(1012, 695);
 const QString MainWindow::NIGHT_MODE_SUFFIX = "_nm";
 
 const quint8 MainWindow::DEFAULT_REFRESH_RATE = 10; // in Hertz
 const quint8 MainWindow::MAX_REFRESH_RATE = 30; // in Hertz
+const quint8 MainWindow::MIN_REFRESH_RATE = 10; // in Hertz
 
 const quint32 MainWindow::DEFAULT_NETWORK_USAGE_UPDATE_PERIOD = 500; // 500 miliseconds
 
@@ -77,11 +78,11 @@ using audio::AbstractMp3Streamer;
 MainWindow::MainWindow(MainController *mainController, QWidget *parent) :
     QMainWindow(parent),
     mainController(mainController),
-    /*camera(nullptr),
+    camera(nullptr),
     videoFrameGrabber(nullptr),
     cameraView(nullptr),
     cameraCombo(nullptr),
-    cameraLayout(nullptr),*/
+    cameraLayout(nullptr),
     bottomCollapsed(false),
     busyDialog(new BusyDialog()),
     bpmVotingExpirationTimer(nullptr),
@@ -106,7 +107,7 @@ MainWindow::MainWindow(MainController *mainController, QWidget *parent) :
     ui.labelYourControls->setVisible(false);
     ui.localControlsCollapseButton->setVisible(false);
 
-    setWindowTitle(QString("JamTaba Mini")); // + VERSION + " %1 bits)").arg(QSysInfo::WordSize));
+    setWindowTitle(QString("JamTaba Classic")); // + VERSION + " %1 bits)").arg(QSysInfo::WordSize));
 
     initializeLoginService();
     initializeMainTabWidget();
@@ -118,7 +119,7 @@ MainWindow::MainWindow(MainController *mainController, QWidget *parent) :
     initializeTranslator();
     initializeThemeMenu();
     initializeMeteringOptions();
-    //initializeCameraWidget();
+    initializeCameraWidget();
     setupWidgets();
     setupSignals();
 
@@ -202,7 +203,7 @@ void MainWindow::setupMainTabCornerWidgets()
     ui.contentTabWidget->setCornerWidget(frame);
 }
 
-/*void MainWindow::setCameraComboVisibility(bool show)
+void MainWindow::setCameraComboVisibility(bool show)
 {
     if (!cameraCombo)
         return;
@@ -444,7 +445,7 @@ QImage MainWindow::pickCameraFrame() const
     }
 
     return QImage();
-}*/
+}
 
 void MainWindow::initializeMeteringOptions()
 {
@@ -542,8 +543,8 @@ void MainWindow::setTintColor(const QColor &color)
         group->setTintColor(color);
     }
 
-    //if (cameraView)
-    //    cameraView->setIcon(IconFactory::createWebcamIcon(color));
+    if (cameraView)
+        cameraView->setIcon(IconFactory::createWebcamIcon(color));
 
     if (ninjamWindow)
         ninjamWindow->setTintColor(color);
@@ -646,8 +647,8 @@ void MainWindow::initializeLanguageMenu()
 void MainWindow::initializeGuiRefreshTimer()
 {
     quint8 refreshRate = mainController->getSettings().getMeterRefreshRate();
-    if (refreshRate <= 0)
-        refreshRate = DEFAULT_REFRESH_RATE;
+    if (refreshRate < MIN_REFRESH_RATE)
+        refreshRate = MIN_REFRESH_RATE;
     else if (refreshRate > MAX_REFRESH_RATE)
         refreshRate = MAX_REFRESH_RATE;
 
@@ -673,7 +674,7 @@ void MainWindow::initialize()
         setTheme(themeName);
     }
 
-    //showBusyDialog(tr("Loading rooms list ..."));
+    showBusyDialog(tr("Loading rooms list ..."));
 
     doWindowInitialization();
 
@@ -712,13 +713,13 @@ void MainWindow::showPeakMetersOnlyInLocalControls(bool showPeakMetersOnly)
     ui.localControlsCollapseButton->setVisible(showPeakMetersOnly);
     ui.localControlsCollapseButton->setChecked(showPeakMetersOnly);
 
-    /*if (cameraView) {
+    if (cameraView) {
         cameraCombo->setVisible(cameraView->isVisible() && cameraCombo->count() > 1);
         
         if (showPeakMetersOnly) {
             cameraCombo->setVisible(false);
         }
-    }*/
+    }
     
     updateLocalInputChannelsGeometry();
 
@@ -847,8 +848,8 @@ void MainWindow::removeChannelsGroup(int channelIndex)
             // TODO Refactoring: emit a signal 'localChannel removed' and catch this signal in NinjamController
             mainController->sendRemovedChannelMessage(channelIndex);
 
-            //if (channel->isVideoChannel())
-            //    cameraView->activate(false); // deactivate the camera if the 2nd channel is deleted
+            if (channel->isVideoChannel())
+                cameraView->activate(false); // deactivate the camera if the 2nd channel is deleted
 
             update();
         }
@@ -1133,13 +1134,13 @@ bool MainWindow::jamRoomLessThan(const login::RoomInfo &r1, const login::RoomInf
 
 void MainWindow::detachMainController()
 {
-    /*if (videoFrameGrabber) { // necessary to avoid crash VST host when Jamtaba is removed
-        disconnect(videoFrameGrabber, &CameraFrameGrabber::frameAvailable, this, nullptr);
-    }
+    //if (videoFrameGrabber) { // necessary to avoid crash VST host when Jamtaba is removed
+        //disconnect(videoFrameGrabber, &CameraFrameGrabber::frameAvailable, this, nullptr);
+    //}
 
     if (camera) { // necessary to avoid crash VST host when Jamtaba is removed
         camera->unload();
-    }*/
+    }
 
     mainController = nullptr;
 }
@@ -2123,27 +2124,27 @@ void MainWindow::timerEvent(QTimerEvent *)
 
         if (performanceMonitorLabel) {
 
-            auto memmoryUsed = performanceMonitor->getMemmoryUsed();
-            auto batteryUsed = performanceMonitor->getBatteryUsed();
+                   auto memmoryUsed = performanceMonitor->getMemmoryUsed();
+                   auto batteryUsed = performanceMonitor->getBatteryUsed();
 
-            bool showMemmory = memmoryUsed > 60; //memory meter only active (as an alert) if RAM usage is > 60%
-            bool showBattery = batteryUsed != 255; //Battery meter active only if battery is available
+                   //bool showMemmory = memmoryUsed > 60; //memory meter only active (as an alert) if RAM usage is > 60%
+                   bool showBattery = batteryUsed != 255; //Battery meter active only if battery is available
 
-            QString string;
-                string += QString("CPU: %1%").arg(performanceMonitor->getCpuUsage());
-            if (showMemmory)
-                string += QString(" MEM: %1%").arg(memmoryUsed);
+                   QString string;
+                       string += QString("CPU: %1%").arg(performanceMonitor->getCpuUsage());
+                   //if (showMemmory)
+                       string += QString(" MEM: %1%").arg(performanceMonitor->getMemmoryUsed());
 
-            if (showBattery) {
-                string += QString(" BAT: %1%").arg(abs(batteryUsed));
-                if (batteryUsed > 0) string += QString("↑");
-                else string += QString("↓");
-            }
+                   if (showBattery) {
+                       string += QString(" BAT: %1%").arg(abs(batteryUsed));
+                       if (batteryUsed > 0) string += QString("↑");
+                       else string += QString("↓");
+                   }
 
-            performanceMonitorLabel->setText(string);
-            performanceMonitorLabel->setToolTip("Current Time is " + QTime::currentTime().toString("h:mm"));
+                   performanceMonitorLabel->setText(string);
+                   performanceMonitorLabel->setToolTip("Current Time is " + QTime::currentTime().toString("h:mm"));
 
-                   //performanceMonitorLabel->setVisible(showMemmory || showBattery);
+                          //performanceMonitorLabel->setVisible(showMemmory || showBattery);
 
                }
 
@@ -2182,6 +2183,14 @@ void MainWindow::timerEvent(QTimerEvent *)
     auto masterPeak = mainController->getMasterPeak();
     ui.masterFader->setPeak(masterPeak.getLeftPeak(), masterPeak.getRightPeak(),
                             masterPeak.getLeftRMS(), masterPeak.getRightRMS());
+
+            //qDebug() << masterPeak.getLeftRMS() << masterPeak.getRightRMS();
+
+    static const float AUTO_LEVEL_THRESHOLD = 0.354813; // -9 db
+
+    if (masterPeak.getLeftRMS() >= AUTO_LEVEL_THRESHOLD || masterPeak.getRightRMS() >= AUTO_LEVEL_THRESHOLD) {
+        ui.masterFader->setValue(ui.masterFader->value() - 2); // auto lower fader gain by decrementally when rms peaks are high
+    }
 
     // update all blinkable buttons
     BlinkableButton::updateAllBlinkableButtons();
@@ -2667,7 +2676,7 @@ void MainWindow::showJamtabaCurrentVersion()
     auto text = tr("Jamtaba version is %1").arg(QApplication::applicationVersion());
     text += QString(" (%1 bits) \n\n").arg(QSysInfo::WordSize);
     text += QString("Qt: \t %1 \n").arg(qVersion());
-    //text += QString("FFMpeg:\t %1 \n").arg(av_version_info());
+    text += QString("FFMpeg:\t %1 \n").arg(av_version_info());
     text += QString("Vorbis:\t %1 \n").arg(vorbis_version_string());
     text += QString("MiniUpnP:\t %1 \n").arg(MINIUPNPC_VERSION);
     text += QString("Architecture:\t %1 \n").arg(QSysInfo::buildCpuArchitecture());

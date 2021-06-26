@@ -21,7 +21,7 @@ LocalTrackGroupView::LocalTrackGroupView(int channelIndex, MainWindow *mainWindo
     index(channelIndex),
     mainWindow(mainWindow),
     peakMeterOnly(false),
-    //videoChannel(false),
+    videoChannel(false),
     preparingToTransmit(false),
     usingSmallSpacingInLayouts(false)
 {
@@ -57,7 +57,7 @@ LocalTrackGroupView::LocalTrackGroupView(int channelIndex, MainWindow *mainWindo
 
     translateUi();
 }
-/*
+
  void LocalTrackGroupView::setAsVideoChannel()
 {
     if (index < 1 || videoChannel)
@@ -65,11 +65,11 @@ LocalTrackGroupView::LocalTrackGroupView(int channelIndex, MainWindow *mainWindo
 
     videoChannel = true;
 
-    auto instrumentIcon = static_cast<int>(videoChannel ? InstrumentIndex::Video : InstrumentIndex::JamTabaIcon);
+/*    auto instrumentIcon = static_cast<int>(videoChannel ? InstrumentIndex::Video : InstrumentIndex::JamTabaIcon);
     setInstrumentIcon(instrumentIcon);
     instrumentsButton->setStyleSheet(QString("margin-left: 0px"));
     instrumentsButton->blockSignals(true);
-    instrumentsButton->setVisible(!peakMeterOnly);
+    instrumentsButton->setVisible(!peakMeterOnly);*/
     groupNameField->setText("Video");
     groupNameField->setVisible(false);
     xmitButton->setChecked(false);
@@ -90,7 +90,7 @@ LocalTrackGroupView::LocalTrackGroupView(int channelIndex, MainWindow *mainWindo
     //voiceChatButton->setEnabled(false);
     //toolButton->setVisible(false);
 
-}*/
+}
 
 InstrumentsButton *LocalTrackGroupView::createInstrumentsButton()
 {
@@ -126,7 +126,7 @@ void LocalTrackGroupView::translateUi()
 
 void LocalTrackGroupView::updateXmitButtonText()
 {
-    if (peakMeterOnly) { // || videoChannel) {
+    if (peakMeterOnly || videoChannel) {
         xmitButton->setText(""); // no text, just the up arrow icon
     }
     else{
@@ -141,7 +141,7 @@ LocalTrackGroupView::~LocalTrackGroupView()
 void LocalTrackGroupView::setPreparingStatus(bool preparing)
 {
     this->preparingToTransmit = preparing;
-    //xmitButton->setEnabled(!preparing);// & !videoChannel);
+    //xmitButton->setEnabled(!preparing & !videoChannel);
     if (!isShowingPeakMeterOnly())
         updateXmitButtonText();
 
@@ -474,7 +474,7 @@ void LocalTrackGroupView::deletePreset(QAction *action)
 
 QSize LocalTrackGroupView::sizeHint() const
 {
-    if (peakMeterOnly) // || videoChannel)
+    if (peakMeterOnly || videoChannel)
         return QFrame::sizeHint();
 
     return TrackGroupView::sizeHint();
@@ -486,7 +486,7 @@ void LocalTrackGroupView::setPeakMeterMode(bool peakMeterOnly)
         this->peakMeterOnly = peakMeterOnly;
 
         toolButton->setVisible(!peakMeterOnly);
-        groupNameField->setVisible(!peakMeterOnly);// & !videoChannel);
+        groupNameField->setVisible(!peakMeterOnly & !videoChannel);
 
         for (auto view : getTracks<LocalTrackView *>()) {
             view->setPeakMetersOnlyMode(peakMeterOnly);

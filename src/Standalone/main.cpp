@@ -11,7 +11,7 @@
 
 int main(int argc, char *args[])
 {
-    QApplication::setApplicationName("JamTaba Mini");
+    QApplication::setApplicationName("JamTaba Classic");
     QApplication::setApplicationVersion(APP_VERSION);
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling); // fixing issue https://github.com/elieserdejesus/JamTaba/issues/1216
 

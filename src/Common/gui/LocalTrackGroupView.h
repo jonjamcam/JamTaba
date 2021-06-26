@@ -22,8 +22,8 @@ public:
 
     int getChannelIndex() const;
 
-    //void setAsVideoChannel();
-    //bool isVideoChannel() const;
+    void setAsVideoChannel();
+    bool isVideoChannel() const;
 
     virtual void setPeakMeterMode(bool peakMeterOnly);
     virtual void togglePeakMeterOnlyMode();
@@ -79,7 +79,7 @@ private:
     int index;
 
     bool peakMeterOnly;
-    //bool videoChannel;
+    bool videoChannel;
 
     QPushButton *createToolButton();
     BlinkableButton *createXmitButton();
@@ -126,10 +126,10 @@ private slots:
     void toggleVoiceChatStatus(bool checked);
 };
 
-/*inline bool LocalTrackGroupView::isVideoChannel() const
+inline bool LocalTrackGroupView::isVideoChannel() const
 {
     return videoChannel;
-}*/
+}
 
 inline BlinkableButton *LocalTrackGroupView::getXmitButton() const
 {

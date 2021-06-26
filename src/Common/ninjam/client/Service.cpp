@@ -197,8 +197,16 @@ bool Service::isBotName(const QString &userName)
 QStringList Service::buildBotNamesList()
 {
     QStringList names;
-    names.append(QStringLiteral("Jambot"));
+/*  names.append(QStringLiteral("localhost"));
+    names.append(QStringLiteral("ninjamer.com"));
+    names.append(QStringLiteral("ninbot.com"));
+    names.append(QStringLiteral("MUTANTLAB"));
+    names.append(QStringLiteral("mutantlab.com"));
+    names.append(QStringLiteral("LiveStream"));
+    names.append(QStringLiteral("dojcbot"));
+    names.append(QStringLiteral("DOJCbot"));*/
     names.append(QStringLiteral("ninbot_"));
+    names.append(QStringLiteral("Jambot"));
     names.append(QStringLiteral("server@server"));
 
     return names;
@@ -334,10 +342,10 @@ void Service::process(const DownloadIntervalWrite &msg)
                     emit audioIntervalDownloading(user, download.getChannelIndex(), msg.getEncodedData(), isFirstPart, false);
              }
         }
-/*        else if (msg.downloadIsComplete()) { // download is video
+        else if (msg.downloadIsComplete()) { // download is video
             emit videoIntervalCompleted(user, download.getEncodedData());
             downloads.remove(msg.getGUID());
-        }*/
+        }
     } else {
         qCritical() << "GUID is not in map!";
     }
