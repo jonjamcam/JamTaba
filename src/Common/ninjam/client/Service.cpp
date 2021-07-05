@@ -200,6 +200,7 @@ QStringList Service::buildBotNamesList()
     names.append(QStringLiteral("Jambot"));
     names.append(QStringLiteral("ninbot_"));
     names.append(QStringLiteral("server@server"));
+
     return names;
 }
 
@@ -333,10 +334,10 @@ void Service::process(const DownloadIntervalWrite &msg)
                     emit audioIntervalDownloading(user, download.getChannelIndex(), msg.getEncodedData(), isFirstPart, false);
              }
         }
-        else if (msg.downloadIsComplete()) { // download is video
+/*        else if (msg.downloadIsComplete()) { // download is video
             emit videoIntervalCompleted(user, download.getEncodedData());
             downloads.remove(msg.getGUID());
-        }
+        }*/
     } else {
         qCritical() << "GUID is not in map!";
     }

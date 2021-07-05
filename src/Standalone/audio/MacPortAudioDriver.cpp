@@ -19,7 +19,6 @@ QList<int> PortAudioDriver::getValidBufferSizes(int deviceIndex) const
 
     for (long size = minBufferSize; size <= maxBufferSize; size *= 2) // 64, 128, 256, 512, etc.
         buffersSize.append(size);
-
     return buffersSize;
 }
 
@@ -41,13 +40,12 @@ QString PortAudioDriver::getInputChannelName(const unsigned int index) const
     if (audioInputDeviceIndex == paNoDevice)
         return "Error! No Input!";
 
-    auto channelName = QString(PaMacCore_GetChannelName(audioInputDeviceIndex, index, true));
+    return QString(PaMacCore_GetChannelName(audioInputDeviceIndex, index, true));    auto channelName = QString(PaMacCore_GetChannelName(audioInputDeviceIndex, index, true));
 
     if (channelName.isEmpty())
         channelName = QString("In %1").arg(index + 1);
 
-    return channelName;
-}
+    return channelName;}
 
 void PortAudioDriver::configureHostSpecificInputParameters(PaStreamParameters &inputParameters)
 {

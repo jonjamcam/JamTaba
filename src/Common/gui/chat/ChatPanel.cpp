@@ -6,6 +6,7 @@
 #include "gui/TextEditorModifier.h"
 #include "gui/UsersColorsPool.h"
 #include "ninjam/client/User.h"
+#include "geo/IpToLocationResolver.h"
 
 #include <QWidget>
 #include <QScrollBar>
@@ -122,11 +123,6 @@ void ChatPanel::turnOff()
         toggleOnOff();
 }
 
-bool ChatPanel::isOn() const
-{
-    return on;
-}
-
 void ChatPanel::toggleOnOff()
 {
     on = !on;
@@ -189,7 +185,8 @@ void ChatPanel::showConnectedUsersWidget(bool show)
     ui->treeWidget->setVisible(show);
 }
 
-void ChatPanel::updateUsersLocation(const QString &ip, const login::Location &location)
+//void ChatPanel::updateUsersLocation(const QString &ip, const login::Location &location)
+void ChatPanel::updateUsersLocation(const QString &ip, const geo::Location &location)
 {
     auto root = ui->treeWidget->topLevelItem(0);
     for (int i = 0; i < root->childCount(); ++i) {
@@ -201,14 +198,18 @@ void ChatPanel::updateUsersLocation(const QString &ip, const login::Location &lo
     }
 }
 
-void ChatPanel::setItemCountryDetails(QTreeWidgetItem *item, const login::Location &location)
+//void ChatPanel::setItemCountryDetails(QTreeWidgetItem *item, const login::Location &location)
+void ChatPanel::setItemCountryDetails(QTreeWidgetItem *item, const geo::Location &location)
 {
-    auto icon = QIcon(QString(":/flags/flags/%1.png").arg(location.countryCode.toLower()));
+    //auto icon = QIcon(QString(":/flags/flags/%1.png").arg(location.countryCode.toLower()));
+    auto icon = QIcon(QString(":/flags/flags/%1.png").arg(location.getCountryCode().toLower()));
 
     auto countryCollumn = 1;
 
-    item->setIcon(countryCollumn, icon);
-    item->setText(countryCollumn, location.countryName);
+    //item->setIcon(countryCollumn, icon); //show puclic chat user flag
+    //item->setText(countryCollumn, location.countryName);
+    item->setText(countryCollumn, location.getCountryCode());
+    item->setToolTip(countryCollumn, location.getRegionName() + ", " + location.getCountryName());
 }
 
 void ChatPanel::setConnectedUserBlockedStatus(const QString &userFullName, bool blocked)
@@ -245,7 +246,8 @@ void ChatPanel::setConnectedUsers(const QStringList &usersNames)
         auto ip = ninjam::client::extractUserIP(userFullName);
         auto item = new QTreeWidgetItem(root, QStringList(name));
         item->setData(0, Qt::UserRole + 1, ip);
-        setItemCountryDetails(item, login::Location()); // unknown location
+        //setItemCountryDetails(item, login::Location()); // unknown location
+        setItemCountryDetails(item, geo::Location()); // unknown location
         root->addChild(item);
     }
 
@@ -379,9 +381,10 @@ void ChatPanel::setInputsStatus(bool enabled)
 
 void ChatPanel::setTopicMessage(const QString &topic)
 {
-    ui->topicLabel->setText(topic);
+    ui->topicLabel->setText("");
+    ui->topicLabel->setToolTip(topic);
 
-    ui->topicLabel->setVisible(!topic.isEmpty());
+    ui->topicLabel->setVisible(true); // (!topic.isEmpty())
 }
 
 void ChatPanel::changeEvent(QEvent *e)
@@ -454,7 +457,7 @@ void ChatPanel::confirmVote()
 
 void ChatPanel::addChordProgressionConfirmationMessage(const ChordProgression &progression)
 {
-    QString buttonText = tr("Use/load the chords above");
+    QString buttonText = tr("Load chords above");
     QPushButton *chordProgressionButton = new ChordProgressionConfirmationButton(buttonText,
                                                                                  progression);
     chordProgressionButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -535,7 +538,7 @@ void ChatPanel::addLastChordsMessage(const QString &userName, const QString &mes
 void ChatPanel::addMessage(const QString &localUserName, const QString &msgAuthorFullName, const QString &msgText, bool showTranslationButton, bool showBlockButton)
 {
 
-    QString fullName = !msgAuthorFullName.isEmpty() ? msgAuthorFullName : "JamTaba";
+    QString fullName = !msgAuthorFullName.isEmpty() ? msgAuthorFullName : " "; // MSG
 
     QColor backgroundColor = getUserColor(fullName);
 
@@ -601,7 +604,7 @@ void ChatPanel::addMessagePanelInLayout(ChatMessagePanel *msgPanel, Qt::Alignmen
 QColor ChatPanel::getUserColor(const QString &userName)
 {
     if (botNames.contains(userName, Qt::CaseInsensitive) || userName.isEmpty()
-        || userName.toLower() == "jamtaba")
+        || userName.toLower() == " ") // msg
         return BOT_COLOR;
 
     Q_ASSERT(colorsPool);

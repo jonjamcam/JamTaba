@@ -146,14 +146,14 @@ QString JamRecorder::buildAudioFileName(const QString &userName, quint8 channelI
 {
     QString channelName = "Channel " + QString::number(channelIndex + 1);
     return userName + " (" + channelName + ") part " + buildPaddedFileNumber(currentInterval) + ".ogg";
-}
+   }
 
-QString JamRecorder::buildPaddedFileNumber(int fileNumber)
-{
-    const int padDigits = 3;
-    const QChar padChar('0');
+   QString JamRecorder::buildPaddedFileNumber(int fileNumber)
+   {
+       const int padDigits = 3;
+       const QChar padChar('0');
 
-    return QString("%1").arg(fileNumber, padDigits, 10, padChar);
+       return QString("%1").arg(fileNumber, padDigits, 10, padChar);
 }
 
 JamRecorder::JamRecorder(JamMetadataWriter* jamMetadataWritter) :
@@ -197,7 +197,7 @@ void JamRecorder::appendLocalUserAudio(const QByteArray &encodedAudio, quint8 ch
     interval.appendEncodedData(encodedAudio);
 }
 
-void JamRecorder::appendLocalUserVideo(const QByteArray &encodedVideo, bool isFirstPartOfInterval)
+/*void JamRecorder::appendLocalUserVideo(const QByteArray &encodedVideo, bool isFirstPartOfInterval)
 {
     if (!running) {
         qCritical() << "Illegal state! Recorder is not running!";
@@ -215,7 +215,7 @@ void JamRecorder::appendLocalUserVideo(const QByteArray &encodedVideo, bool isFi
 
         QByteArray encodedData(videoInterval.getEncodedData());
 
-        QString videoFileName = buildVideoFileName(localUserName, videoInterval.getIntervalIndex(), "mp4");
+        QString videoFileName = buildVideoFileName(localUserName, videoInterval.getIntervalIndex(), "264");
         QString videoFilePath = jamMetadataWritter->getVideoAbsolutePath(videoFileName);
 
         if (!videoFilePath.isEmpty()) // some recorders (like ClipSort) can't save videos
@@ -225,7 +225,7 @@ void JamRecorder::appendLocalUserVideo(const QByteArray &encodedVideo, bool isFi
     }
 
     videoInterval.appendEncodedData(encodedVideo);
-}
+}*/
 
 void JamRecorder::addRemoteUserAudio(const QString &userName, const QByteArray &encodedAudio, quint8 channelIndex)
 {
@@ -240,6 +240,19 @@ void JamRecorder::addRemoteUserAudio(const QString &userName, const QByteArray &
     QtConcurrent::run(this, &JamRecorder::writeEncodedFile, encodedAudio, audioFilePath);
     jam->addAudioFile(userName, channelIndex, audioFilePath, intervalIndex);
 }
+
+/*void JamRecorder::addRemoteUserVideo(const QString &userName, const QByteArray &encodedVideo)
+{
+    if (!running) {
+        qCritical() << "Illegal state! Recorder is not running!";
+        return;
+    }
+
+    int videoInterval = globalIntervalIndex;
+    QString videoFileName = buildVideoFileName(userName, videoInterval, "264");
+    QString videoFilePath = jamMetadataWritter->getVideoAbsolutePath(videoFileName);
+    QtConcurrent::run(this, &JamRecorder::writeEncodedFile, encodedVideo, videoFilePath);
+}*/
 
 void JamRecorder::startRecording(const QString &localUser, const QDir &recordBaseDir, int bpm, int bpi, int sampleRate)
 {

@@ -147,7 +147,7 @@ void NinjamRoomWindow::translate()
     // translate other elements
     horizontalLayoutButton->setToolTip(tr("Set tracks layout to horizontal"));
     verticalLayoutButton->setToolTip(tr("Set tracks layout to vertical"));
-    gridLayoutButton->setToolTip(tr("Set tracks layout to grid"));
+    //gridLayoutButton->setToolTip(tr("Set tracks layout to grid"));
     wideButton->setToolTip(tr("Wide tracks"));
     narrowButton->setToolTip(tr("Narrow tracks"));
 
@@ -175,18 +175,18 @@ void NinjamRoomWindow::createLayoutButtons(TracksLayout initialLayout)
     verticalLayoutButton->setObjectName(QStringLiteral("buttonVerticalLayout"));
     verticalLayoutButton->setCheckable(true);
 
-    gridLayoutButton = new QToolButton();
+/*    gridLayoutButton = new QToolButton();
     gridLayoutButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
     gridLayoutButton->setIcon(QIcon(":/images/grid_layout.png"));
     gridLayoutButton->setObjectName(QStringLiteral("buttonGridLayout"));
-    gridLayoutButton->setCheckable(true);
+    gridLayoutButton->setCheckable(true);*/
 
     if(initialLayout == TracksLayout::VerticalLayout)
         verticalLayoutButton->setChecked(true);
     else if(initialLayout == TracksLayout::HorizontalLayout)
         horizontalLayoutButton->setChecked(true);
-    else if (initialLayout == TracksLayout::GridLayout)
-        gridLayoutButton->setChecked(true);
+/*    else if (initialLayout == TracksLayout::GridLayout)
+        gridLayoutButton->setChecked(true);*/
     else
         qCritical() << "Invalid initial layout value " << static_cast<quint8>(initialLayout);
 
@@ -195,12 +195,12 @@ void NinjamRoomWindow::createLayoutButtons(TracksLayout initialLayout)
     buttonsLayout->setContentsMargins(0, 0, 0, 0);
     buttonsLayout->addWidget(verticalLayoutButton);
     buttonsLayout->addWidget(horizontalLayoutButton);
-    buttonsLayout->addWidget(gridLayoutButton);
+    //buttonsLayout->addWidget(gridLayoutButton);
 
     QButtonGroup *buttonGroup = new QButtonGroup(this);
     buttonGroup->addButton(verticalLayoutButton);
     buttonGroup->addButton(horizontalLayoutButton);
-    buttonGroup->addButton(gridLayoutButton);
+    //buttonGroup->addButton(gridLayoutButton);
 
     int licenceButtonIndex = ui->topLayout->indexOf(ui->licenceButton);
     ui->topLayout->insertLayout(licenceButtonIndex, buttonsLayout);
@@ -251,9 +251,9 @@ void NinjamRoomWindow::toggleTracksLayoutOrientation(QAbstractButton* buttonClic
     else if (buttonClicked == horizontalLayoutButton) {
         setTracksLayout(TracksLayout::HorizontalLayout);
     }
-    else if (buttonClicked == gridLayoutButton) {
+    /*else if (buttonClicked == gridLayoutButton) {
         setTracksLayout(TracksLayout::GridLayout);
-    }
+    }*/
 }
 
 void NinjamRoomWindow::toggleTracksSize(QAbstractButton *buttonClicked)
@@ -534,10 +534,10 @@ void NinjamRoomWindow::resizeEvent(QResizeEvent *ev)
 
 }
 
-bool cameraSorter(NinjamTrackGroupView *track1, NinjamTrackGroupView *)
+/*bool cameraSorter(NinjamTrackGroupView *track1, NinjamTrackGroupView *)
 {
      return track1 && track1->isShowingVideo();
-}
+}*/
 
 void NinjamRoomWindow::reAddTrackGroups()
 {
@@ -546,9 +546,9 @@ void NinjamRoomWindow::reAddTrackGroups()
 
     auto itemsToAdd = trackGroups.values();
 
-    if (tracksLayout == TracksLayout::GridLayout) { // if layout is Grid reorder trackGroups to show active cams first
+    /*if (tracksLayout == TracksLayout::GridLayout) { // if layout is Grid reorder trackGroups to show active cams first
         qSort(itemsToAdd.begin(), itemsToAdd.end(), cameraSorter);
-    }
+    }*/
 
     for (auto trackGroup : itemsToAdd)
         addTrack(trackGroup);
@@ -761,7 +761,7 @@ void NinjamRoomWindow::setupSignals(controller::NinjamController* ninjamControll
 
     connect(ninjamPanel, &NinjamPanel::intervalShapeChanged, this, &NinjamRoomWindow::setNewIntervalShape);
 
-    connect(mainController->getNinjamService(), &ninjam::client::Service::videoIntervalCompleted, this, &NinjamRoomWindow::setVideoInterval);
+    //connect(mainController->getNinjamService(), &ninjam::client::Service::videoIntervalCompleted, this, &NinjamRoomWindow::setVideoInterval);
 
     connect(ui->chordsButton, &QPushButton::clicked, [=](){
 
@@ -782,13 +782,19 @@ void NinjamRoomWindow::showChordProgressionDialog(const ChordProgression &curren
     }
 }
 
-void NinjamRoomWindow::setVideoInterval(const User &user, const QByteArray &encodedVideoData)
+/*void NinjamRoomWindow::setVideoInterval(const User &user, const QByteArray &encodedVideoData)
 {
     auto group = trackGroups[user.getFullName()];
     if (group) {
         group->addVideoInterval(encodedVideoData);
+        if (mainController->isMultiTrackRecordingActivated())
+        {
+            auto geoLocation = mainController->getGeoLocation(user.getIp());
+            QString userName = user.getName() + " from " + geoLocation.getCountryName();
+            mainController->saveEncodedVideo(userName, encodedVideoData); //recording remote video streams
+        }
     }
-}
+}*/
 
 void NinjamRoomWindow::handleBpiChanges()
 {

@@ -1,8 +1,9 @@
 #include "MapMarker.h"
 
-MapMarker::MapMarker(const QString &playerName, const QString &countryName, const QPointF &latLong, const QImage &flag) :
+MapMarker::MapMarker(const QString &playerName, const QString &countryName, const QString &regionName, const QPointF &latLong, const QImage &flag) :
     playerName(playerName),
     countryName(countryName),
+    regionName(regionName),
     latLong(latLong),
     flag(flag)
 {
@@ -16,5 +17,5 @@ QString MapMarker::getPlayerName() const
 
 QString MapMarker::getText() const
 {
-    return playerName + "  " + countryName;
+    return regionName + ", " + countryName;
 }

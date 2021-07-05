@@ -12,6 +12,12 @@ PrivateServerDialog::PrivateServerDialog(QWidget *parent, MainController *mainCo
     mainController(mainController)
 {
     ui->setupUi(this);
+    ui->ServerList->setReadOnly(true);
+    ui->ServerList->setPlainText(tr("Loading Cockos server list, please wait..."));
+    man = new QNetworkAccessManager(this);
+        QNetworkRequest request (QUrl("http://autosong.ninjam.com/serverlist.php"));
+        reply = man->get(request);
+        connect(reply, SIGNAL(finished()),this,SLOT(dataProcess()));
 
     ui->okButton->setAutoDefault(true);
     connect(ui->okButton, &QPushButton::clicked, this, &PrivateServerDialog::accept);
@@ -69,4 +75,9 @@ QString PrivateServerDialog::getServer() const
 PrivateServerDialog::~PrivateServerDialog()
 {
     delete ui;
+}
+
+void PrivateServerDialog::dataProcess()
+{
+  ui->ServerList->setPlainText(reply->readAll());
 }

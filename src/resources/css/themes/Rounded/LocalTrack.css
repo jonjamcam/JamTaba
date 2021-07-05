@@ -68,6 +68,7 @@ FxPanelItem QPushButton:checked
 }
 
 #xmitButton[preparing="true"],
+#xmitButton[preparing="true"]:hover:checked,
 #voiceChatButton:checked[blinking="true"]
 {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.9, stop:0 rgb(255,255,0), stop:1 rgb(204,204,0));

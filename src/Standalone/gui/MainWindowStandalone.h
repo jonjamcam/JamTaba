@@ -25,7 +25,7 @@ public:
 
     persistence::LocalInputTrackSettings getInputsSettings() const override;
 
-    void addChannelsGroup(int instrumentIndex) override;
+    void addChannelsGroup(const QString &groupName) override;
 
     void refreshTrackInputSelection(int inputTrackIndex);
 
@@ -54,8 +54,8 @@ protected:
 protected slots: // TODO change to private slots?
 
     void setGlobalPreferences(const QList<bool> &midiInputsStatus, const QList<bool> &syncOutputsStatus,
-                              QString audioInputDevice, QString audioOutputDevice,
-                              int firstIn, int lastIn, int firstOut, int lastOut);
+                                  QString audioInputDevice, QString audioOutputDevice,
+                                  int firstIn, int lastIn, int firstOut, int lastOut);
 
     // plugin finder
     void showPluginScanDialog();

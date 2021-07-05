@@ -51,11 +51,11 @@ ChatPanel #labelFontSize
 }
 
 
-#topicLabel
+/*#topicLabel
 {
     color: #58A9AA;
     background: #1E4346;
-}
+}*/
 
 /* ChatMessagePanel is the widget used to show ONE chat message
 ----------------------------------------------------------------*/

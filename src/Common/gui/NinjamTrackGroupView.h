@@ -4,7 +4,7 @@
 #include "TrackGroupView.h"
 #include "NinjamTrackView.h"
 #include "widgets/MarqueeLabel.h"
-#include "video/VideoWidget.h"
+//#include "video/VideoWidget.h"
 
 #include <QLabel>
 #include <QBoxLayout>
@@ -34,11 +34,12 @@ public:
     ~NinjamTrackGroupView();
     void setNarrowStatus(bool narrow);
     void updateGeoLocation();
-    void setUserName(const QString &groupName);
+    void setGroupName(const QString &groupName) override;
+    QString getGroupName() const override;
     void updateGuiElements() override;
     void setEstimatedChunksPerInterval(int estimatedChunks);
 
-    bool isShowingVideo() const;
+    //bool isShowingVideo() const;
 
     NinjamTrackView *addTrackView(long trackID) override;
 
@@ -46,7 +47,7 @@ public:
 
     QSize sizeHint() const override;
 
-    void addVideoInterval(const QByteArray &encodedVideoData);
+    //void addVideoInterval(const QByteArray &encodedVideoData);
 
     QColor getTintColor() const;
 
@@ -57,7 +58,7 @@ signals:
     void createPrivateChat(const QString &userName, const QString &userIP);
 
 public slots:
-    void updateVideoFrame(const QImage &frame);
+    //void updateVideoFrame(const QImage &frame);
 
 protected:
     NinjamTrackView *createTrackView(long trackID) override;
@@ -68,17 +69,17 @@ private:
     controller::MainController *mainController;
     QLabel *countryLabel;
     QLabel *countryFlag;
-    MarqueeLabel *userNameLabel;
+    MarqueeLabel *groupNameLabel;
     QLabel *chatBlockIconLabel;
     QString userIP;
     TracksLayout tracksLayoutEnum;
 
-    VideoWidget *videoWidget;
-    QByteArray encodedVideoData;
-    quint64 lastVideoRender;
-    QList<QList<QImage>> decodedImages;
-    uint videoFrameRate;
-    uint intervalsWithoutReceiveVideo;
+    //VideoWidget *videoWidget;
+    //QByteArray encodedVideoData;
+    //quint64 lastVideoRender;
+    //QList<QList<QImage>> decodedImages;
+    //uint videoFrameRate;
+    //uint intervalsWithoutReceiveVideo;
 
     void setupHorizontalLayout();
     void setupVerticalLayout();
@@ -99,7 +100,7 @@ private slots:
     void hideChatBlockIcon(const QString &unblockedUserName);
     void showChatBlockIcon(const QString &blockedUserName);
 
-    void startVideoStream();
+    //void startVideoStream();
 };
 
 #endif // NINJAMTRACKGROUPVIEW_H

@@ -19,16 +19,17 @@ using login::UserInfo;
 using login::RoomInfo;
 
 const QString LoginService::LOGIN_SERVER_URL = "http://ninbot.com/app/servers.php";
-const QString LoginService::VERSION_SERVER_URL = "http://jamtaba2.appspot.com/version";
+//const QString LoginService::VERSION_SERVER_URL = "http://jamtaba2.appspot.com/version";
 
-UserInfo::UserInfo(const QString &name, const QString &ip, const QString &countryName, const QString &countryCode, float latitude, float longitude) :
+//UserInfo::UserInfo(const QString &name, const QString &ip, const QString &countryName, const QString &countryCode, float latitude, float longitude) :
+UserInfo::UserInfo(const QString &name, const QString &ip) :
     name(name),
     ip(ip)
 {
-    location.latitude = latitude;
+/*    location.latitude = latitude;
     location.longitude = longitude;
     location.countryCode = countryCode;
-    location.countryName = countryName;
+    location.countryName = countryName;*/
 }
 
 RoomInfo::RoomInfo(const QString &roomName, int roomPort,
@@ -40,8 +41,7 @@ RoomInfo::RoomInfo(const QString &roomName, int roomPort,
     users(users),
     bpi(bpi),
     bpm(bpm),
-    streamUrl(streamUrl),
-    isPrivate(false)
+    streamUrl(streamUrl)
 {
     //
 }
@@ -49,18 +49,7 @@ RoomInfo::RoomInfo(const QString &roomName, int roomPort,
 RoomInfo::RoomInfo(const QString &roomName, int roomPort, int maxUsers, int maxChannels) :
     RoomInfo(roomName, roomPort, maxUsers, QList<login::UserInfo>(), maxChannels, 0, 0, "")
 {
-    isPrivate = true;
-}
-
-void RoomInfo::setPreferredUserCredentials(const QString userName, const QString userPass)
-{
-    userCredentials.name = userName;
-    userCredentials.pass = userPass;
-}
-
-bool RoomInfo::hasPreferredUserCredentials() const
-{
-    return !userCredentials.name.isEmpty();
+        //
 }
 
 QString RoomInfo::getUniqueName() const {
@@ -105,7 +94,7 @@ LoginService::LoginService(QObject *parent) :
     httpClient.get(QNetworkRequest(QUrl(LOGIN_SERVER_URL)));
 
     // query the current version to jamtaba server using HTTP (is querying github using HTTPS)
-    httpClient.get(QNetworkRequest(QUrl(VERSION_SERVER_URL)));
+    //httpClient.get(QNetworkRequest(QUrl(VERSION_SERVER_URL)));
 
 }
 
@@ -185,25 +174,32 @@ int getServerGuessedMaxUsers(const QString &serverName, int serverPort) {
 RoomInfo LoginService::buildRoomInfoFromJson(const QJsonObject &jsonObject)
 {
     auto serverNameText = jsonObject.contains("name") ? jsonObject["name"].toString() : QString("Error");
-    auto name =  getServerName(serverNameText);
+    //auto name =  getServerName(serverNameText);
+    QString name =  getServerName(serverNameText);
     int port = getServerPort(serverNameText);
     int maxUsers = jsonObject.contains("user_max") ? jsonObject["user_max"].toString().toInt() : getServerGuessedMaxUsers(name, port);
-    if (name.contains(QRegExp("ninbot|ninjamer|discordonlinejammingcentral|mutant"))) maxUsers--; // ugly hack to get bots subtracted from maxusers in jamroomview
-    auto streamLink = jsonObject.contains("stream") ? jsonObject["stream"].toString() : QString("");
+    if (name.contains(QRegExp("ninjamer|discordonlinejammingcentral|mutant"))) maxUsers--; // ugly hack to get bots subtracted from maxusers in jamroomview
+    //auto streamLink = jsonObject.contains("stream") ? jsonObject["stream"].toString() : QString("");
+    QString streamLink = jsonObject.contains("stream") ? jsonObject["stream"].toString() : QString("");
     int bpi = jsonObject.contains("bpi") ? jsonObject["bpi"].toString().toInt() : 16;
     int bpm = jsonObject.contains("bpm") ? jsonObject["bpm"].toString().toInt() : 120;
 
-    auto usersArray = jsonObject.contains("users") ? jsonObject["users"].toArray() : QJsonArray();
+    //auto usersArray = jsonObject.contains("users") ? jsonObject["users"].toArray() : QJsonArray();
+    QJsonArray usersArray = jsonObject.contains("users") ? jsonObject["users"].toArray() : QJsonArray();
     QList<UserInfo> users;
     for (int i = 0; i < usersArray.size(); ++i) {
-        auto userObject = usersArray[i].toObject();
+/*        auto userObject = usersArray[i].toObject();
         auto userName = userObject.contains("name") ? userObject["name"].toString() : QString("Error");
         auto userIp = userObject.contains("ip") ? userObject["ip"].toString() : QString("Error");
         float latitude = userObject.contains("lat") ? userObject["lat"].toString().toFloat() : 0;
         float longitude = userObject.contains("lon") ? userObject["lon"].toString().toFloat() : 0;
         auto countryName = userObject.contains("country") ? userObject["country"].toString() : QString("");
         auto countryCode = userObject.contains("co") ? userObject["co"].toString() : QString("");
-        users.append(login::UserInfo(userName, userIp, countryName, countryCode, latitude, longitude));
+        users.append(login::UserInfo(userName, userIp, countryName, countryCode, latitude, longitude));*/
+        QJsonObject userObject = usersArray[i].toObject();
+        QString userName = userObject.contains("name") ? userObject.value("name").toString() : QString("Error");
+        QString userIp = userObject.contains("ip") ? userObject.value("ip").toString() : QString("Error");
+        users.append(login::UserInfo(userName, userIp));
     }
     return RoomInfo(name, port, maxUsers, users, 0, bpi, bpm, streamLink);
 }

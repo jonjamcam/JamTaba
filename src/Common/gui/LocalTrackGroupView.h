@@ -22,8 +22,8 @@ public:
 
     int getChannelIndex() const;
 
-    void setAsVideoChannel();
-    bool isVideoChannel() const;
+    //void setAsVideoChannel();
+    //bool isVideoChannel() const;
 
     virtual void setPeakMeterMode(bool peakMeterOnly);
     virtual void togglePeakMeterOnlyMode();
@@ -61,6 +61,8 @@ protected:
 
     virtual void populateMenu(QMenu &menu);
 
+    void refreshStyleSheet() override;
+
     static const int MAX_SUB_CHANNELS = 2;
 
     MainWindow *mainWindow;
@@ -77,7 +79,7 @@ private:
     int index;
 
     bool peakMeterOnly;
-    bool videoChannel;
+    //bool videoChannel;
 
     QPushButton *createToolButton();
     BlinkableButton *createXmitButton();
@@ -95,7 +97,7 @@ private:
     static QString getStripedPresetName(const QString &presetName);
 
 signals:
-    void instrumentIconChanged();
+    void nameChanged();
     void trackRemoved();
     void trackAdded();
     void presetLoaded();
@@ -124,10 +126,10 @@ private slots:
     void toggleVoiceChatStatus(bool checked);
 };
 
-inline bool LocalTrackGroupView::isVideoChannel() const
+/*inline bool LocalTrackGroupView::isVideoChannel() const
 {
     return videoChannel;
-}
+}*/
 
 inline BlinkableButton *LocalTrackGroupView::getXmitButton() const
 {

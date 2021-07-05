@@ -15,8 +15,10 @@ namespace Ui {
 class ChatPanel;
 }
 
-namespace login {
-struct Location;
+//namespace login {
+//struct Location;
+namespace geo {
+class Location;
 }
 
 class ChatMessagePanel;
@@ -62,13 +64,12 @@ public:
     void turnOn();
     void turnOff();
 
-    bool isOn() const;
-
     static void setFontSizeOffset(qint8 sizeOffset);
 
 public slots:
     void setTopicMessage(const QString &topic);
-    void updateUsersLocation(const QString &ip, const login::Location &location);
+    //void updateUsersLocation(const QString &ip, const login::Location &location);
+    void updateUsersLocation(const QString &ip, const geo::Location &location);
     void createServerInviteButton(const QString &serverIP, quint16 serverPort);
 
 signals:
@@ -143,7 +144,8 @@ private:
     const static qint8 MAX_FONT_OFFSET;
     const static qint8 MIN_FONT_OFFSET;
 
-    static void setItemCountryDetails(QTreeWidgetItem *item, const login::Location &location);
+    //static void setItemCountryDetails(QTreeWidgetItem *item, const login::Location &location);
+    static void setItemCountryDetails(QTreeWidgetItem *item, const geo::Location &location);
 
     QColor getUserColor(const QString &userName);
 
@@ -214,7 +216,7 @@ public:
     {
         setObjectName("voteButton");
 
-        QString label = tr("Vote - change %1 to %2 ").arg(voteType).arg(QString::number(voteValue));
+        QString label = tr("Change %1 to %2").arg(voteType).arg(QString::number(voteValue));
         setText(label);
 
         QTimer::singleShot(expireTime * 1000, this, SLOT(hide()));

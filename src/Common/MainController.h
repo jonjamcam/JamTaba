@@ -5,12 +5,13 @@
 #include <QImage>
 
 #include "UploadIntervalData.h"
+#include "geo/IpToLocationResolver.h"
 #include "loginserver/LoginService.h"
 #include "persistence/Settings.h"
 #include "persistence/UsersDataCache.h"
 #include "audio/core/AudioMixer.h"
 #include "midi/MidiDriver.h"
-#include "video/FFMpegMuxer.h"
+//#include "video/FFMpegMuxer.h"
 #include "gui/chat/EmojiManager.h"
 
 class MainWindow;
@@ -181,7 +182,8 @@ public:
 
     bool isStarted() const;
 
-    login::Location getGeoLocation(const QString &ip);
+    //login::Location getGeoLocation(const QString &ip);
+    geo::Location getGeoLocation(const QString &ip);
 
     LocalInputNode *getInputTrack(int localInputIndex);
     virtual int addInputTrackNode(LocalInputNode *inputTrackNode);
@@ -244,6 +246,8 @@ public:
 
     void saveEncodedAudio(const QString &userName, quint8 channelIndex,
                           const QByteArray &encodedAudio);
+    //void saveEncodedVideo(const QString &userName,
+    //                      const QByteArray &encodedVideo);
 
     AbstractMp3Streamer *getRoomStreamer() const;
 
@@ -315,10 +319,10 @@ public:
     const static QSize MAX_VIDEO_SIZE;
 
 signals:
+    void ipResolved(const QString &ip);
     void themeChanged();
     void userBlockedInChat(const QString &userName);
     void userUnblockedInChat(const QString &userName);
-    void ipResolved(const QString &ip);
 
 public slots:
     virtual void setSampleRate(int newSampleRate);
@@ -332,7 +336,7 @@ public slots:
     void blockUserInChat(const QString &userNameToBlock);
     void unblockUserInChat(const QString &userNameToUnblock);
 
-    void processCapturedFrame(int frameID, const QImage &frame);
+    //void processCapturedFrame(int frameID, const QImage &frame);
 
     virtual void connectInNinjamServer(const ServerInfo &server);
 
@@ -344,7 +348,7 @@ protected:
 
     LoginService loginService;
 
-    QMap<QString, login::Location> locationCache;
+    //QMap<QString, login::Location> locationCache;
 
     AudioMixer audioMixer;
 
@@ -378,7 +382,7 @@ protected:
 
     virtual void syncWithNinjamIntervalStart(uint intervalLenght);
 
-    FFMpegMuxer videoEncoder;
+    //FFMpegMuxer videoEncoder;
 
 private:
     void setAllTracksActivation(bool activated);
@@ -397,6 +401,8 @@ private:
     void tryConnectInNinjamServer(const RoomInfo &ninjamRoom, const QList<ChannelMetadata> &channels,
                                   const QString &password = "");
 
+    QScopedPointer<geo::IpToLocationResolver> ipToLocationResolver;
+
     QList<JamRecorder *> jamRecorders;
 
     QList<JamRecorder *> getActiveRecorders() const;
@@ -409,9 +415,9 @@ private:
 
     int lastInputTrackID;     // used to generate a unique key/ID for each input track
 
-    const static quint8 CAMERA_FPS;
+    //const static quint8 CAMERA_FPS;
 
-    bool canGrabNewFrameFromCamera() const;
+    //bool canGrabNewFrameFromCamera() const;
 
     quint64 lastFrameTimeStamp;
 
@@ -440,7 +446,7 @@ protected slots:
     // TODO move this slot to NinjamController
     virtual void handleNewNinjamInterval();
 
-    void requestCameraFrame(int intervalPosition);
+    //void requestCameraFrame(int intervalPosition);
 
 };
 

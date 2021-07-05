@@ -17,28 +17,28 @@
 #include <QBoxLayout>
 
 LocalTrackGroupView::LocalTrackGroupView(int channelIndex, MainWindow *mainWindow) :
-    TrackGroupView(mainWindow),
+    TrackGroupView(mainWindow->createTextEditorModifier()),
     index(channelIndex),
     mainWindow(mainWindow),
     peakMeterOnly(false),
-    videoChannel(false),
+    //videoChannel(false),
     preparingToTransmit(false),
     usingSmallSpacingInLayouts(false)
 {
-    instrumentsButton = createInstrumentsButton();
-    topPanelLayout->addWidget(instrumentsButton, 1, Qt::AlignCenter);
+    //instrumentsButton = createInstrumentsButton();
+    //topPanelLayout->addWidget(instrumentsButton, 1, Qt::AlignCenter);
 
-    connect(instrumentsButton, &InstrumentsButton::iconChanged, this, &LocalTrackGroupView::instrumentIconChanged);
+    //connect(instrumentsButton, &InstrumentsButton::iconChanged, this, &LocalTrackGroupView::instrumentIconChanged);
 
 
     toolButton = createToolButton();
     voiceChatButton = createVoiceChatButton();
 
     toolVoiceChatLayout = new QBoxLayout(QBoxLayout::TopToBottom);
-    toolVoiceChatLayout->setContentsMargins(5, 5, 5, 5);
-    toolVoiceChatLayout->setSpacing(5);
-    toolVoiceChatLayout->addWidget(toolButton, 0, Qt::AlignTop | Qt::AlignCenter);
-    toolVoiceChatLayout->addWidget(voiceChatButton, 0, Qt::AlignBottom | Qt::AlignRight);
+    toolVoiceChatLayout->setContentsMargins(2, 0, 1, 1);
+    toolVoiceChatLayout->setSpacing(1);
+    toolVoiceChatLayout->addWidget(toolButton, 0, Qt::AlignCenter | Qt::AlignCenter);
+    toolVoiceChatLayout->addWidget(voiceChatButton, 0, Qt::AlignCenter | Qt::AlignCenter);
     topPanelLayout->addLayout(toolVoiceChatLayout);
 
     xmitButton = createXmitButton();
@@ -47,14 +47,18 @@ LocalTrackGroupView::LocalTrackGroupView(int channelIndex, MainWindow *mainWindo
 
     connect(toolButton, &QPushButton::clicked, this, &LocalTrackGroupView::showMenu);
 
+    connect(groupNameField, &QLineEdit::editingFinished, this, &LocalTrackGroupView::nameChanged);
+
     connect(xmitButton, &QPushButton::toggled, this, &LocalTrackGroupView::toggleTransmitingStatus);
 
     connect(voiceChatButton, &QPushButton::toggled, this, &LocalTrackGroupView::toggleVoiceChatStatus);
 
+    groupNameField->setAlignment(Qt::AlignHCenter);
+
     translateUi();
 }
-
-void LocalTrackGroupView::setAsVideoChannel()
+/*
+ void LocalTrackGroupView::setAsVideoChannel()
 {
     if (index < 1 || videoChannel)
         return; // first channel can't be a video channel
@@ -66,6 +70,8 @@ void LocalTrackGroupView::setAsVideoChannel()
     instrumentsButton->setStyleSheet(QString("margin-left: 0px"));
     instrumentsButton->blockSignals(true);
     instrumentsButton->setVisible(!peakMeterOnly);
+    groupNameField->setText("Video");
+    groupNameField->setVisible(false);
     xmitButton->setChecked(false);
     xmitButton->setVisible(false);
 
@@ -75,12 +81,16 @@ void LocalTrackGroupView::setAsVideoChannel()
         track->getInputNode()->setToNoInput();
     }
 
-    toolButton->setVisible(false);
+    topPanel->setVisible(false);
 
     updateXmitButtonText();
 
-    voiceChatButton->setVisible(false);
-}
+    //voiceChatButton->setVisible(true);
+//    voiceChatButton->click();
+    //voiceChatButton->setEnabled(false);
+    //toolButton->setVisible(false);
+
+}*/
 
 InstrumentsButton *LocalTrackGroupView::createInstrumentsButton()
 {
@@ -90,9 +100,12 @@ InstrumentsButton *LocalTrackGroupView::createInstrumentsButton()
     return new InstrumentsButton(defaultIcon, icons, this);
 }
 
-QString LocalTrackGroupView::getChannelGroupName() const
+void LocalTrackGroupView::refreshStyleSheet()
 {
-    return instrumentIndexToString(static_cast<InstrumentIndex>(getInstrumentIcon()));
+    TrackGroupView::refreshStyleSheet();
+
+    style()->unpolish(groupNameField);
+    style()->polish(groupNameField);
 }
 
 void LocalTrackGroupView::translateUi()
@@ -107,11 +120,13 @@ void LocalTrackGroupView::translateUi()
 
     toolButton->setToolTip(tr("Add or remove channels..."));
     toolButton->setAccessibleDescription(toolButton->toolTip());
+
+    groupNameField->setPlaceholderText(tr("channel"));
 }
 
 void LocalTrackGroupView::updateXmitButtonText()
 {
-    if (peakMeterOnly || videoChannel) {
+    if (peakMeterOnly) { // || videoChannel) {
         xmitButton->setText(""); // no text, just the up arrow icon
     }
     else{
@@ -126,7 +141,7 @@ LocalTrackGroupView::~LocalTrackGroupView()
 void LocalTrackGroupView::setPreparingStatus(bool preparing)
 {
     this->preparingToTransmit = preparing;
-    xmitButton->setEnabled(!preparing);
+    //xmitButton->setEnabled(!preparing);// & !videoChannel);
     if (!isShowingPeakMeterOnly())
         updateXmitButtonText();
 
@@ -189,7 +204,7 @@ void LocalTrackGroupView::closePluginsWindows()
 
 void LocalTrackGroupView::addChannel()
 {
-    mainWindow->addChannelsGroup(-1); // using default instrument icon
+    mainWindow->addChannelsGroup(""); // using default instrument icon
 }
 
 void LocalTrackGroupView::setInstrumentIcon(int instrumentIndex)
@@ -199,7 +214,7 @@ void LocalTrackGroupView::setInstrumentIcon(int instrumentIndex)
 
 int LocalTrackGroupView::getInstrumentIcon() const
 {
-    return instrumentsButton->getSelectedIcon();
+    return -1;
 }
 
 void LocalTrackGroupView::resetTracks()
@@ -459,7 +474,7 @@ void LocalTrackGroupView::deletePreset(QAction *action)
 
 QSize LocalTrackGroupView::sizeHint() const
 {
-    if (peakMeterOnly || videoChannel)
+    if (peakMeterOnly) // || videoChannel)
         return QFrame::sizeHint();
 
     return TrackGroupView::sizeHint();
@@ -471,10 +486,11 @@ void LocalTrackGroupView::setPeakMeterMode(bool peakMeterOnly)
         this->peakMeterOnly = peakMeterOnly;
 
         toolButton->setVisible(!peakMeterOnly);
-        instrumentsButton->setVisible(!peakMeterOnly);
+        groupNameField->setVisible(!peakMeterOnly);// & !videoChannel);
 
         for (auto view : getTracks<LocalTrackView *>()) {
             view->setPeakMetersOnlyMode(peakMeterOnly);
+
         }
 
         updateXmitButtonText();

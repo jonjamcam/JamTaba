@@ -88,7 +88,7 @@ namespace client
         void serverBpmChanged(quint16 currentBpm);
         void serverInitialBpmBpiAvailable(quint16 bpm, quint16 bpi);
         void audioIntervalCompleted(const User &user, quint8 channelIndex, const QByteArray &encodedAudioData);
-        void videoIntervalCompleted(const User &user, const QByteArray &encodedVideoData);
+        //void videoIntervalCompleted(const User &user, const QByteArray &encodedVideoData);
         void audioIntervalDownloading(const User &user, quint8 channelIndex, const QByteArray &encodedAudioData, bool isFirstPart, bool isLastPart);
         void disconnectedFromServer(const ServerInfo &server);
         void connectedInServer(const ServerInfo &server);

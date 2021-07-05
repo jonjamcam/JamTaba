@@ -10,27 +10,28 @@ class NatMap;
 class QTimer;
 
 namespace login {
-
+/*
 struct Location {
     float latitude = 0;
     float longitude = 0;
     QString countryName;
     QString countryCode;
-};
+};*/
 
 class UserInfo
 {
 
 public:
-    UserInfo(const QString &name, const QString &ip, const QString &countryName, const QString &countryCode, float latitude, float longitude);
+    //UserInfo(const QString &name, const QString &ip, const QString &countryName, const QString &countryCode, float latitude, float longitude);
+    UserInfo(const QString &name, const QString &ip);
     inline QString getIp() const { return ip; }
     inline QString getName() const { return name; }
-    inline Location getLocation() const { return location; }
+    //inline Location getLocation() const { return location; }
 
 private:
     QString name;
     QString ip;
-    Location location;
+    //Location location;
 };
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -53,7 +54,6 @@ public:
 
     bool isEmpty() const;
     bool isFull() const;
-    bool isPrivateServer() const { return isPrivate; }
 
     int getPort() const;
 
@@ -72,13 +72,6 @@ public:
 
     QString getUniqueName() const;
 
-    void setPreferredUserCredentials(const QString userName, const QString userPass = QString());
-
-    bool hasPreferredUserCredentials() const;
-
-    QString getPreferredUserName() const { return userCredentials.name; }
-    QString getPreferredUserPass() const { return userCredentials.pass; }
-
 protected:
 
     QString name;
@@ -94,15 +87,6 @@ protected:
 
     int bpi;
     int bpm;
-
-    struct UserCredentials {
-        QString name;
-        QString pass;
-    };
-
-    UserCredentials userCredentials;
-
-    bool isPrivate;
 };
 
 inline bool RoomInfo::isFull() const
@@ -174,7 +158,7 @@ private:
 
     QNetworkAccessManager httpClient;
     static const QString LOGIN_SERVER_URL;
-    static const QString VERSION_SERVER_URL;
+    //static const QString VERSION_SERVER_URL;
 
     static const int REFRESH_PERIOD = 60000;
     QTimer *refreshTimer;

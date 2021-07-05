@@ -9,10 +9,10 @@
 #include <QActionGroup>
 #include "widgets/PeakMeter.h"
 
-TrackGroupView::TrackGroupView(QWidget *parent) :
+TrackGroupView::TrackGroupView(TextEditorModifier *TextEditorModifier, QWidget *parent) :
     QFrame(parent)
 {
-    setupUI();
+    setupUI(TextEditorModifier);
 
     // context menu
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -58,7 +58,7 @@ void TrackGroupView::showMaxPeakMarker(bool showMarker)
     AudioSlider::setPaintMaxPeakMarker(showMarker);
 }
 
-void TrackGroupView::setupUI()
+void TrackGroupView::setupUI(TextEditorModifier *textEditorModifier)
 {
     setObjectName(QStringLiteral("TrackGroupView"));
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -70,10 +70,21 @@ void TrackGroupView::setupUI()
     topPanel = new QWidget(this);
     topPanel->setObjectName(QStringLiteral("topPanel"));
 
+    groupNameField = new QLineEdit(topPanel);
+    groupNameField->setObjectName(QStringLiteral("groupNameField"));
+    groupNameField->setAttribute(Qt::WA_MacShowFocusRect, 0); // disable blue border when QLineEdit has focus in mac
+
     topPanelLayout = new QHBoxLayout();
     topPanelLayout->setObjectName(QStringLiteral("topPanelLayout"));
     topPanelLayout->setSpacing(0);
-    topPanelLayout->setContentsMargins(0, 3, 0, 0);
+    topPanelLayout->setContentsMargins(2, 2, 2, 1);
+
+    topPanelLayout->addWidget(groupNameField);
+
+    if (textEditorModifier) {
+        bool finishEditorPressingReturnKey = true;
+        textEditorModifier->modify(groupNameField, finishEditorPressingReturnKey);
+    }
 
     tracksLayout = new QHBoxLayout();
     tracksLayout->setContentsMargins(0, 3, 0, 0); // adding a small top margin to fix #861
@@ -155,6 +166,16 @@ BaseTrackView *TrackGroupView::addTrackView(long trackID)
         }
     }
     return newTrackView;
+}
+
+void TrackGroupView::setGroupName(const QString &groupName)
+{
+    groupNameField->setText(groupName);
+}
+
+QString TrackGroupView::getGroupName() const
+{
+    return groupNameField->text();
 }
 
 void TrackGroupView::removeTrackView(BaseTrackView *trackView)

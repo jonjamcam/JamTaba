@@ -6,11 +6,10 @@
 #include <QTranslator>
 #include <QMainWindow>
 #include <QMessageBox>
-#include <QCamera>
-#include <QCameraInfo>
-#include <QVideoFrame>
+//#include <QCamera>
+//#include <QCameraInfo>
+//#include <QVideoFrame>
 #include <QComboBox>
-#include <QFileInfo>
 
 class PreferencesDialog;
 class LocalTrackView;
@@ -22,7 +21,7 @@ class ChatPanel;
 class InactivityDetector;
 class LocalTrackGroupView;
 class CameraFrameGrabber;
-class VideoWidget;
+//class VideoWidget;
 class BusyDialog;
 class LooperWindow;
 class UsersColorsPool;
@@ -86,7 +85,7 @@ public:
 
     void highlightChannelGroup(int index) const;
 
-    virtual void addChannelsGroup(int instrumentIndex);
+    virtual void addChannelsGroup(const QString &name);
     void removeChannelsGroup(int channelGroupIndex);
 
     void exitFromRoom(bool normalDisconnection, QString disconnectionMessage = "");
@@ -108,9 +107,9 @@ public:
 
     virtual TextEditorModifier *createTextEditorModifier() = 0;
 
-    QImage pickCameraFrame() const;
+    //QImage pickCameraFrame() const;
 
-    bool cameraIsActivated() const;
+    //bool cameraIsActivated() const;
 
     void closeAllFloatingWindows();
 
@@ -150,7 +149,7 @@ protected:
 
     bool eventFilter(QObject *target, QEvent *event) override;
 
-    LocalTrackGroupView *addLocalChannel(int channelGroupIndex, int instrumentIndex,
+    LocalTrackGroupView *addLocalChannel(int channelGroupIndex, const QString &channelName,
                                          bool createFirstSubchannel);
 
     // this factory method is overrided in derived classes to create more specific views
@@ -192,12 +191,12 @@ protected:
 
     static const QSize MAIN_WINDOW_MIN_SIZE;
 
-    QCamera *camera;
+    /*QCamera *camera;
     CameraFrameGrabber *videoFrameGrabber;
     VideoWidget *cameraView;
     QComboBox *cameraCombo;
     QVBoxLayout *cameraLayout;
-    QString preferredCameraName;
+    QString preferredCameraName;*/
 
     QColor tintColor;
 
@@ -302,9 +301,9 @@ private slots:
 
     void updateUserNameLineEditToolTip();
 
-    void changeCameraStatus(bool activated);
+    //void changeCameraStatus(bool activated);
 
-    void selectNewCamera(int cameraIndex);
+    //void selectNewCamera(int cameraIndex);
 
     void handleUserLeaving(const QString &userFullName);
     void handleUserEntering(const QString &userName);
@@ -377,8 +376,6 @@ private:
 
     void wireNinjamSignals();
 
-    QList<login::RoomInfo> loadPrivateServersFromJson(const QFileInfo &privateServersFile);
-
     int timerID; // timer used to refresh the entire GUI: animations, peak meters, etc
     static const quint8 DEFAULT_REFRESH_RATE;
     static const quint8 MAX_REFRESH_RATE;
@@ -403,9 +400,9 @@ private:
 
     static bool jamRoomLessThan(const login::RoomInfo &r1, const login::RoomInfo &r2);
 
-    void setCameraComboVisibility(bool show);
+    //void setCameraComboVisibility(bool show);
 
-    void initializeCamera(const QString &cameraDeviceName);
+    //void initializeCamera(const QString &cameraDeviceName);
 
     void initializeLoginService();
     void initializeLocalInputChannels(const persistence::LocalInputTrackSettings &localInputSettings);
@@ -424,10 +421,10 @@ private:
 
     void initializeGuiRefreshTimer();
 
-    void initializeCameraWidget();
+    //void initializeCameraWidget();
 
-    QCamera::FrameRateRange getBestSupportedFrameRate() const;
-    QSize getBestCameraResolution(const QList<QSize> resolutions) const;
+    //QCamera::FrameRateRange getBestSupportedFrameRate() const;
+    // getBestCameraResolution(const QList<QSize> resolutions) const;
 
     void updateUserNameLabel();
 

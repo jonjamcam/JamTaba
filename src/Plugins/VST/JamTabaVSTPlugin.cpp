@@ -116,7 +116,7 @@ bool JamTabaVSTPlugin::getEffectName(char *name)
 {
     if (!name)
         return false;
-    vst_strncpy(name, "JamTaba 2", kVstMaxEffectNameLen);
+    vst_strncpy(name, "JamTaba Mini", kVstMaxEffectNameLen);
     return true;
 }
 
@@ -135,7 +135,7 @@ bool JamTabaVSTPlugin::getVendorString(char *text)
     if (!text)
         return false;
 
-    vst_strncpy(text, "www.jamtaba.com", kVstMaxVendorStrLen);
+    vst_strncpy(text, "", kVstMaxVendorStrLen);
 
     return true;
 }

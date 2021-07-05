@@ -127,7 +127,7 @@ LocalTrackView::LocalTrackView(controller::MainController *mainController, int c
 
     setActivatedStatus(false);
 
-    secondaryChildsLayout->addWidget(buttonLooper, 0, Qt::AlignCenter);
+    panWidgetsLayout->addWidget(buttonLooper, 0, Qt::AlignCenter);
     secondaryChildsLayout->addWidget(buttonStereoInversion, 0, Qt::AlignCenter);
 
     connect(inputNode->getLooper(), &audio::Looper::stateChanged, this, &LocalTrackView::updateLooperButtonIcon);
@@ -202,7 +202,9 @@ QSize LocalTrackView::sizeHint() const
 
 void LocalTrackView::setupMetersLayout()
 {
-    mainLayout->addWidget(levelSlider, 1, 0); // put the levelSlider in the original place
+    sliderPeakLayout->addWidget(levelSlider);
+    sliderPeakLayout->addWidget(peaksDbLabel, 0, Qt::AlignCenter);
+    mainLayout->addLayout(sliderPeakLayout, 1, 0, 1, 1, Qt::AlignBottom); // put the levelSlider and peakdblabel in the original place
 }
 
 void LocalTrackView::setPeakMetersOnlyMode(bool peakMetersOnly)
@@ -212,18 +214,18 @@ void LocalTrackView::setPeakMetersOnlyMode(bool peakMetersOnly)
 
         gui::setLayoutItemsVisibility(secondaryChildsLayout, !this->peakMetersOnly);
 
-        levelSlider->setShowMeterOnly(peakMetersOnly);
+        //levelSlider->setShowMeterOnly(peakMetersOnly);
 
-        gui::setLayoutItemsVisibility(panWidgetsLayout, !this->peakMetersOnly);
+        //gui::setLayoutItemsVisibility(panWidgetsLayout, !this->peakMetersOnly); //do not hide panlayout so looper button is visible
 
         if (peakMetersOnly) { // add the peak meters directly in main layout, so these meters are horizontally centered
-            mainLayout->addWidget(levelSlider, 0, 0, mainLayout->rowCount(), mainLayout->columnCount());
+            mainLayout->addLayout(sliderPeakLayout, 0, 0, mainLayout->rowCount(), mainLayout->columnCount());
         }
         else { // put the meter in the original layout
             setupMetersLayout();
         }
 
-        const int spacing = peakMetersOnly ? 0 : 3;
+        const int spacing = peakMetersOnly ? 0 : 0;
 
         mainLayout->setHorizontalSpacing(spacing);
 
@@ -238,6 +240,10 @@ void LocalTrackView::setPeakMetersOnlyMode(bool peakMetersOnly)
 
         soloButton->setVisible(!peakMetersOnly);
         muteButton->setVisible(!peakMetersOnly);
+        //peaksDbLabel->setVisible(!peakMetersOnly);
+        panSlider->setVisible(!peakMetersOnly);
+        labelPanL->setVisible(!peakMetersOnly);
+        labelPanR->setVisible(!peakMetersOnly);
         Qt::Alignment alignment = peakMetersOnly ? Qt::AlignRight : Qt::AlignHCenter;
         levelSlider->parentWidget()->layout()->setAlignment(levelSlider, alignment);
 
