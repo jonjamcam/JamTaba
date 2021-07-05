@@ -23,6 +23,7 @@ namespace geo
     private:
         QMap<QString, QString> countryCodesCache; // IP -> country code (2 upper case letters)
         QMap<QString, QString> countryNamesCache; // country code => translated country name
+        QMap<QString, QString> regionNamesCache; // region code => translated region name
         QMap<QString, QPointF> latLongCache;  // IP => QPointF(latitude, longitude)
         QNetworkAccessManager httpClient;
 
@@ -31,6 +32,7 @@ namespace geo
         // loading
         void loadCountryCodesFromFile();
         void loadCountryNamesFromFile(const QString &languageCode);
+        void loadRegionNamesFromFile(const QString &languageCode);
         void loadLatLongsFromFile();
         bool populateQMapFromFile(const QString &fileName, QMap<QString, QString> &map, quint32 expectedCacheHeaderRevision);
         bool populateQMapFromFile(const QString &fileName, QMap<QString, QPointF> &map, quint32 expectedCacheHeaderRevision);
@@ -42,11 +44,13 @@ namespace geo
         // saving
         void saveCountryCodesToFile();
         void saveCountryNamesToFile();
+        void saveRegionNamesToFile();
         void saveLatLongsToFile();
         bool saveMapToFile(const QString &fileName, const QMap<QString, QString> &map, quint32 cacheHeaderRevision);
         bool saveMapToFile(const QString &fileName, const QMap<QString, QPointF> &map, quint32 cacheHeaderRevision);
 
         static QString buildFileNameFromLanguage(const QString &languageCode);
+        static QString buildRegionFileNameFromLanguage(const QString &languageCode);
         static QString sanitizeLanguageCode(const QString &languageCode);
 
         static bool canTranslateCountryName(const QString &currentLanguage);
@@ -61,10 +65,12 @@ namespace geo
 
         static const QString COUNTRY_CODES_FILE;
         static const QString COUNTRY_NAMES_FILE_PREFIX;
+        static const QString REGION_NAMES_FILE_PREFIX;
         static const QString LAT_LONG_CACHE_FILE;
 
         static const quint32 COUNTRY_CODES_CACHE_REVISION;
         static const quint32 COUNTRY_NAMES_CACHE_REVISION;
+        static const quint32 REGION_NAMES_CACHE_REVISION;
         static const quint32 LAT_LONG_CACHE_REVISION;
 
     private slots:

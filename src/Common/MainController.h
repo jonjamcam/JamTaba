@@ -5,6 +5,7 @@
 #include <QImage>
 
 #include "UploadIntervalData.h"
+#include "geo/IpToLocationResolver.h"
 #include "loginserver/LoginService.h"
 #include "persistence/Settings.h"
 #include "persistence/UsersDataCache.h"
@@ -181,7 +182,8 @@ public:
 
     bool isStarted() const;
 
-    login::Location getGeoLocation(const QString &ip);
+    //login::Location getGeoLocation(const QString &ip);
+    geo::Location getGeoLocation(const QString &ip);
 
     LocalInputNode *getInputTrack(int localInputIndex);
     virtual int addInputTrackNode(LocalInputNode *inputTrackNode);
@@ -244,6 +246,8 @@ public:
 
     void saveEncodedAudio(const QString &userName, quint8 channelIndex,
                           const QByteArray &encodedAudio);
+    void saveEncodedVideo(const QString &userName,
+                          const QByteArray &encodedVideo);
 
     AbstractMp3Streamer *getRoomStreamer() const;
 
@@ -315,10 +319,10 @@ public:
     const static QSize MAX_VIDEO_SIZE;
 
 signals:
+    void ipResolved(const QString &ip);
     void themeChanged();
     void userBlockedInChat(const QString &userName);
     void userUnblockedInChat(const QString &userName);
-    void ipResolved(const QString &ip);
 
 public slots:
     virtual void setSampleRate(int newSampleRate);
@@ -344,7 +348,7 @@ protected:
 
     LoginService loginService;
 
-    QMap<QString, login::Location> locationCache;
+    //QMap<QString, login::Location> locationCache;
 
     AudioMixer audioMixer;
 
@@ -396,6 +400,8 @@ private:
 
     void tryConnectInNinjamServer(const RoomInfo &ninjamRoom, const QList<ChannelMetadata> &channels,
                                   const QString &password = "");
+
+    QScopedPointer<geo::IpToLocationResolver> ipToLocationResolver;
 
     QList<JamRecorder *> jamRecorders;
 

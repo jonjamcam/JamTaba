@@ -45,7 +45,8 @@ CONFIG += c++11
 
 PRECOMPILED_HEADER += PreCompiledHeaders.h
 
-HEADERS += midi/MidiDriver.h
+HEADERS += midi/MidiDriver.h \
+    $$PWD/../src/Common/geo/WebIpToLocationResolver.h
 HEADERS += midi/MidiMessage.h
 HEADERS += looper/Looper.h
 HEADERS += looper/LooperLayer.h
@@ -159,6 +160,8 @@ HEADERS += gui/JamRoomViewPanel.h
 HEADERS += gui/UsersColorsPool.h
 HEADERS += gui/GuiUtils.h
 HEADERS += gui/ThemeLoader.h
+HEADERS += geo/IpToLocationResolver.h
+HEADERS += geo/WebIpToLocationResolver.h
 HEADERS += Utils.h
 HEADERS += Configurator.h
 HEADERS += persistence/Settings.h
@@ -169,7 +172,9 @@ HEADERS += UploadIntervalData.h
 HEADERS += performance/PerformanceMonitor.h
 HEADERS += upnp/UPnPManager.h
 
-SOURCES += MainController.cpp
+SOURCES += MainController.cpp \
+    $$PWD/../src/Common/geo/IpToLocationResolver.cpp \
+    $$PWD/../src/Common/geo/WebIpToLocationResolver.cpp
 SOURCES += NinjamController.cpp
 SOURCES += MetronomeUtils.cpp
 SOURCES += midi/MidiDriver.cpp
@@ -284,7 +289,9 @@ SOURCES += gui/chords/ChatChordsProgressionParser.cpp
 SOURCES += gui/UsersColorsPool.cpp
 SOURCES += gui/GuiUtils.cpp
 SOURCES += gui/ThemeLoader.cpp
+SOURCES += geo/IpToLocationResolver.cpp
 SOURCES += log/logging.cpp
+SOURCES += geo/WebIpToLocationResolver.cpp
 SOURCES += loginserver/LoginService.cpp
 SOURCES += loginserver/Version.cpp
 SOURCES += loginserver/MainChat.cpp

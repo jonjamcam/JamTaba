@@ -197,9 +197,18 @@ bool Service::isBotName(const QString &userName)
 QStringList Service::buildBotNamesList()
 {
     QStringList names;
-    names.append(QStringLiteral("Jambot"));
+/*  names.append(QStringLiteral("localhost"));
+    names.append(QStringLiteral("ninjamer.com"));
+    names.append(QStringLiteral("ninbot.com"));
+    names.append(QStringLiteral("MUTANTLAB"));
+    names.append(QStringLiteral("mutantlab.com"));
+    names.append(QStringLiteral("LiveStream"));
+    names.append(QStringLiteral("dojcbot"));
+    names.append(QStringLiteral("DOJCbot"));*/
     names.append(QStringLiteral("ninbot_"));
+    names.append(QStringLiteral("Jambot"));
     names.append(QStringLiteral("server@server"));
+
     return names;
 }
 

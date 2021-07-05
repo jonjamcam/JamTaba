@@ -19,7 +19,7 @@ public:
     //int getMemmoryUsage();
     int getMemmoryUsed();
     int getBatteryUsed();
-    //double getCpuUsage();
+    double getCpuUsage();
     //double getTotalCpuUsage();
 
 //private:

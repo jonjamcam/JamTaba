@@ -10,23 +10,23 @@ using geo::NullIpToLocationResolver;
 Location::Location() :
     countryName("UNKNOWN"),
     countryCode("UNKNOWN"),
+    regionName("UNKNOWN"),
     latitude(-200),
-    longitude(-200),
-    city("UNKNOWN")
+    longitude(-200)
 {
 }
 
 bool Location::isUnknown() const
 {
-    return countryName == "UNKNOWN" && countryCode == "UNKNOWN";
+    return countryName == "UNKNOWN" && countryCode == "UNKNOWN" && regionName == "UNKNOWN";
 }
 
-Location::Location(const QString &country, const QString &countryCode, double latitude, double longitude, const QString &city) :
+Location::Location(const QString &country, const QString &countryCode,const QString &region, double latitude, double longitude) :
     countryName(sanitize(country)),
     countryCode(sanitize(countryCode)),
+    regionName(sanitize(region)),
     latitude(latitude),
-    longitude(longitude),
-    city(sanitize(city))
+    longitude(longitude)
 {
     //
 }

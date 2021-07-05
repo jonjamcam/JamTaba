@@ -133,7 +133,7 @@ void RtMidiDriver::stop(){
         }
     }
     foreach (RtMidiOut* stream, midiOutStreams) {
-        if (stream) {
+        if(stream){
             stream->closePort();
         }
     }

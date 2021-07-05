@@ -19,6 +19,7 @@
 #include "gui/MainWindow.h"
 #include "gui/ThemeLoader.h"
 #include "log/Logging.h"
+#include "geo/WebIpToLocationResolver.h"
 #include "ninjam/client/Types.h"
 
 #include <QBuffer>
@@ -49,6 +50,7 @@ MainController::MainController(const Settings &settings) :
     videoEncoder(),
     currentStreamingRoomID(-1000),
     started(false),
+    ipToLocationResolver(nullptr),
     masterGain(1),
     usersDataCache(Configurator::getInstance()->getCacheDir()),
     lastInputTrackID(0),
@@ -56,6 +58,9 @@ MainController::MainController(const Settings &settings) :
     emojiManager(":/emoji/emoji.json", ":/emoji/icons")
 {
     QDir cacheDir = Configurator::getInstance()->getCacheDir();
+    ipToLocationResolver.reset(new geo::WebIpToLocationResolver(cacheDir));
+
+    connect(ipToLocationResolver.data(), &geo::IpToLocationResolver::ipResolved, this, &MainController::ipResolved);
 
     // Register known JamRecorders here:
     jamRecorders.append(new recorder::JamRecorder(new recorder::ReaperProjectGenerator()));
@@ -66,7 +71,7 @@ MainController::MainController(const Settings &settings) :
     for (auto emojiCode: settings.getRecentEmojis())
         emojiManager.addRecent(emojiCode);
 
-    connect(&loginService, &login::LoginService::roomsListAvailable, [=](const QList<login::RoomInfo> &publicRooms){
+/*    connect(&loginService, &login::LoginService::roomsListAvailable, [=](const QList<login::RoomInfo> &publicRooms){
         for (const auto & room : publicRooms) {
             for (const auto & user : room.getUsers()) {
                 auto maskedIp = ninjam::client::maskIP(user.getIp());
@@ -76,7 +81,7 @@ MainController::MainController(const Settings &settings) :
                 }
             }
         }
-    });
+    });*/
 }
 
 void MainController::setChannelReceiveStatus(const QString &userFullName, quint8 channelIndex, bool receiveChannel)
@@ -379,7 +384,7 @@ void MainController::enqueueVideoDataToUpload(const QByteArray &encodedData, boo
 
         videoIntervalToUpload.reset(new UploadIntervalData()); // generate a new GUID
 
-        static const auto videoChannelIndex = 1; // always sending video in 2nd channel to avoid drop intervals in first channel
+        static const auto videoChannelIndex = 1; // always sending video in 2nd channel
         ninjamService->sendIntervalBegin(videoIntervalToUpload->getGUID(), videoChannelIndex, false); // starting a new video interval
     }
 
@@ -394,12 +399,12 @@ void MainController::enqueueVideoDataToUpload(const QByteArray &encodedData, boo
         videoIntervalToUpload->clear();
     }
 
-    // disabling the video recording
-// if (settings.isSaveMultiTrackActivated() && isPlayingInNinjamRoom()) {
-// for (auto jamRecorder : getActiveRecorders()) {
-// jamRecorder->appendLocalUserVideo(encodedData, isFirstPart);
-// }
-// }
+    // OLD -> disabling the video recording
+    if (settings.isSaveMultiTrackActivated() && isPlayingInNinjamRoom()) {
+    for (auto jamRecorder : getActiveRecorders()) {
+    jamRecorder->appendLocalUserVideo(encodedData, isFirstPart);
+   }
+   }
 }
 
 int MainController::getMaxAudioChannelsForEncoding(uint trackGroupIndex) const
@@ -437,9 +442,10 @@ QString getFirstIpPart(const QString &ip){
     return ip;
 }
 
-login::Location MainController::getGeoLocation(const QString &ip)
+//login::Location MainController::getGeoLocation(const QString &ip)
+geo::Location MainController::getGeoLocation(const QString &ip)
 {
-    auto maskedIp = ninjam::client::maskIP(ip);
+/*    auto maskedIp = ninjam::client::maskIP(ip);
     if (locationCache.contains(maskedIp))
         return locationCache[maskedIp];
 
@@ -450,7 +456,14 @@ login::Location MainController::getGeoLocation(const QString &ip)
             return locationCache[key];
     }
 
-    return login::Location();
+    return login::Location();*/
+
+
+    auto sanitizedIp = ninjam::client::maskIP(ip);
+    if (!sanitizedIp.isEmpty()) // some servers may not return an ip for user, dont concatenate to ".128" in that case
+        sanitizedIp.replace(ninjam::client::IP_MASK, ".128"); // replace .x (mask) with .128 to generate a valid IP
+
+    return ipToLocationResolver->resolve(sanitizedIp, getTranslationLanguage());
 }
 
 void MainController::mixGroupedInputs(int groupIndex, audio::SamplesBuffer &out)
@@ -465,6 +478,15 @@ void MainController::saveEncodedAudio(const QString &userName, quint8 channelInd
     if (settings.isSaveMultiTrackActivated()) { // just in case
         for (auto jamRecorder : getActiveRecorders())
             jamRecorder->addRemoteUserAudio(userName, encodedAudio, channelIndex);
+    }
+}
+
+// this is called when a new ninjam interval is received and the 'record multi track' option is enabled
+void MainController::saveEncodedVideo(const QString &userName, const QByteArray &encodedVideo)
+{
+    if (settings.isSaveMultiTrackActivated()) { // just in case
+        for (auto jamRecorder : getActiveRecorders())
+            jamRecorder->addRemoteUserVideo(userName, encodedVideo);
     }
 }
 
@@ -1021,14 +1043,10 @@ void MainController::tryConnectInNinjamServer(const login::RoomInfo &ninjamRoom,
         QString serverIp = ninjamRoom.getName();
         int serverPort = ninjamRoom.getPort();
         QString userName = getUserName();
-        QString userPass = (password.isNull() || password.isEmpty()) ? "" : password;
+        QString pass = (password.isNull() || password.isEmpty()) ? "" : password;
 
-        if (ninjamRoom.hasPreferredUserCredentials()) {
-            userName = ninjamRoom.getPreferredUserName();
-            userPass = ninjamRoom.getPreferredUserPass();
-        }
-
-        this->ninjamService->startServerConnection(serverIp, serverPort, userName, channels, userPass);
+        this->ninjamService->startServerConnection(serverIp, serverPort, userName, channels,
+                                                   pass);
     } else {
         qCritical() << "user name not choosed yet!";
     }

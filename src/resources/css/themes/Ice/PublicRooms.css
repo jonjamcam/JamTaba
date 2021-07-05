@@ -68,7 +68,7 @@ JamRoomViewPanel QPushButton#buttonWaveDrawingMode:hover:checked
 WavePeakPanel
 {
     /* color used to draw the wave form */
-    qproperty-peaksColor: #96D3FF;
+    qproperty-peaksColor: #129CFF;
 
     /* color used to draw the loading circle */
     qproperty-loadingColor: #4E9CE5;

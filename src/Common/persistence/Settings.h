@@ -312,8 +312,8 @@ private:
 class Channel
 {
 public:
-    explicit Channel(int instrumentIndex);
-    int instrumentIndex;
+    explicit Channel(const QString &name);
+    QString name;
     QList<SubChannel> subChannels;
 };
 

@@ -5,7 +5,7 @@ include(../qtwinmigrate/src/qtwinmigrate.pri)
 
 QTPLUGIN += dsengine # necessary to use QCamera inside VST plugin
 
-TARGET = "JamtabaVST2"  #using this name (with a '2' suffix) to match the previons JTBA versions and avoid duplicated plugin in user machines
+TARGET = "JamtabaC_VST2"  #using this name (with a '2' suffix) to match the previons JTBA versions and avoid duplicated plugin in user machines
 TEMPLATE = lib
 CONFIG += shared
 

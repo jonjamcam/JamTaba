@@ -35,25 +35,94 @@
       <number>3</number>
      </property>
      <item>
-      <widget class="QLabel" name="topicLabel">
+      <widget class="QLabel" name="labelFontSize">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="MinimumExpanding">
-         <horstretch>1</horstretch>
+        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+         <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="text">
-        <string notr="true">Topic</string>
+        <string notr="true"/>
        </property>
-       <property name="textFormat">
-        <enum>Qt::PlainText</enum>
+       <property name="pixmap">
+        <pixmap resource="../../../resources/jamtaba.qrc">:/images/font_size.png</pixmap>
        </property>
-       <property name="wordWrap">
-        <bool>true</bool>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="indent">
+        <number>0</number>
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignTop">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QToolButton" name="toolButtonPlus">
+         <property name="maximumSize">
+          <size>
+           <width>12</width>
+           <height>10</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Increase chat font size</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../resources/jamtaba.qrc">
+           <normaloff>:/images/small_plus.png</normaloff>:/images/small_plus.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButtonMinus">
+         <property name="maximumSize">
+          <size>
+           <width>12</width>
+           <height>9</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Decrease chat font size</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../resources/jamtaba.qrc">
+           <normaloff>:/images/small_minus.png</normaloff>:/images/small_minus.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QPushButton" name="buttonAutoTranslate">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -81,7 +150,7 @@
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignTop">
+     <item>
       <widget class="QPushButton" name="buttonClear">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -109,7 +178,7 @@
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignTop">
+     <item>
       <widget class="QPushButton" name="buttonOnOff">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -135,6 +204,25 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="topicLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="MinimumExpanding">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string notr="true">Topic</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::PlainText</enum>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacerTop">
@@ -181,7 +269,7 @@
         <x>0</x>
         <y>0</y>
         <width>235</width>
-        <height>187</height>
+        <height>169</height>
        </rect>
       </property>
      </widget>
@@ -192,6 +280,19 @@
      <property name="spacing">
       <number>0</number>
      </property>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>3</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
      <item>
       <widget class="QLineEdit" name="chatText">
        <property name="sizePolicy">
@@ -207,94 +308,6 @@
         <string notr="true"/>
        </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>3</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item alignment="Qt::AlignRight|Qt::AlignVCenter">
-      <widget class="QLabel" name="labelFontSize">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string notr="true"/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../../../resources/jamtaba.qrc">:/images/font_size.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <property name="indent">
-        <number>0</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item alignment="Qt::AlignBottom">
-        <widget class="QToolButton" name="toolButtonPlus">
-         <property name="maximumSize">
-          <size>
-           <width>12</width>
-           <height>10</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Increase chat font size</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../resources/jamtaba.qrc">
-           <normaloff>:/images/small_plus.png</normaloff>:/images/small_plus.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignTop">
-        <widget class="QToolButton" name="toolButtonMinus">
-         <property name="maximumSize">
-          <size>
-           <width>12</width>
-           <height>9</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Decrease chat font size</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../resources/jamtaba.qrc">
-           <normaloff>:/images/small_minus.png</normaloff>:/images/small_minus.png</iconset>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
     </layout>
    </item>

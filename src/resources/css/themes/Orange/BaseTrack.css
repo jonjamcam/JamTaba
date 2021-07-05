@@ -1,0 +1,232 @@
+/* Stylesheet for BaseTrack - Black theme */
+
+
+/* Track buttons
+--------------------------------*/
+
+#soloButton,
+#muteButton
+{
+font-size: 9px;
+border-color: rgb(110,110,110);
+padding: 2px;
+color: rgb(50,50,50);
+}
+
+#buttonBoostMinus12,
+#buttonBoostPlus12,
+#buttonBoostZero,
+#soloButton,
+#muteButton
+{
+     background: rgb(250, 184, 135);
+}
+
+
+#buttonBoostMinus12,
+#buttonBoostPlus12,
+#buttonBoostZero
+{
+    padding: 1px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-radius: 1px;
+}
+
+#buttonBoostMinus12:checked,
+#buttonBoostPlus12:checked,
+#buttonBoostZero:checked
+{
+    background-color: rgb(253, 228, 156);
+    color: rgba(0, 0, 0, 160);
+    border-radius: 0px;
+}
+
+#buttonBoostMinus12:hover,
+#buttonBoostPlus12:hover,
+#buttonBoostZero:hover
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgb(180, 180, 180), stop:1 rgb(120, 120, 120));
+    color: rgb(80, 80, 80);
+    border-radius: 0px;
+    border-color: rgb(40, 40, 40);
+}
+
+#buttonBoostMinus12:hover:checked,
+#buttonBoostPlus12:hover:checked,
+#buttonBoostZero:hover:checked
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgb(120, 120, 120), stop:1 rgb(80, 80, 80));
+    color: rgb(40, 40, 40);
+    border-radius: 0px;
+    border-color: rgb(20, 20, 20)
+}
+
+QPushButton#buttonStereoInversion
+{
+    background-repeat: none;
+    background-position: center center;
+    max-width: 8px;
+    max-height: 12px;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgb(140, 140, 140), stop:1 rgb(120, 120, 120));
+}
+
+QPushButton#buttonStereoInversion:hover
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgb(180, 180, 180), stop:1 rgb(120, 120, 120));
+}
+
+ QPushButton#buttonStereoInversion:checked
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgb(120, 120, 120), stop:1 rgb(80, 80, 80));
+}
+
+ QPushButton#buttonStereoInversion:hover:checked
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgb(140, 140, 140), stop:1 rgb(80, 80, 80));
+}
+
+/* button colors when the track is NOT xmiting */
+BaseTrackView[unlighted="true"] #buttonBoostMinus12,
+BaseTrackView[unlighted="true"] #buttonBoostZero,
+BaseTrackView[unlighted="true"] #buttonBoostPlus12,
+BaseTrackView[unlighted="true"] #soloButton,
+BaseTrackView[unlighted="true"] #muteButton,
+BaseTrackView[unlighted="true"] #buttonStereoInversion
+{
+    background-color: rgba(0, 0, 0, 30);
+    border: none;
+}
+
+#buttonBoostZero:buttonStereoInversion
+{
+    border-bottom: none;
+    border-top: none;
+    border-style: solid;
+    border-color: rgb(20, 20, 20);
+}
+
+#soloButton:checked
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgba(90, 255, 62, 140), stop:1 rgb(0, 175, 0, 140));
+    color: rgb(80, 80, 80);
+}
+
+#soloButton:hover:checked
+{
+background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgba(90, 255, 62, 140), stop:1 rgb(0, 175, 0, 140));
+    color: rgb(80, 80, 80);
+}
+
+#soloButton:hover
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgba(90, 255, 62, 140), stop:1 rgb(0, 175, 0, 140));
+    color: rgb(80, 80, 80);
+}
+
+#muteButton:checked
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.9, stop:0 rgba(255, 90, 62, 180), stop:1 rgba(175, 0, 0, 180));
+    color: rgb(180, 180, 180);
+}
+
+#muteButton:hover:checked
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.9, stop:0 rgba(255, 90, 62, 140), stop:1 rgba(175, 0, 0, 140));
+    color: rgb(180, 180, 180);
+}
+
+#muteButton:hover
+{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgb(180, 180, 180), stop:1 rgb(120, 120, 120));
+    color: rgb(80, 80, 80);
+}
+
+BaseTrackView[unlighted="true"] #buttonStereoInversion:hover, #buttonStereoInversion:hover:checked
+{
+    background-color: rgba(0, 0, 0, 80);
+}
+
+/* Small Label used to show max peak below peak meters
+-------------------------------------------------------*/
+BaseTrackView #peaksDbLabel
+{
+    color: rgb(140, 140, 140);
+    border: 1px solid rgba(0, 0, 0, 8);
+    background-color: rgba(0, 0, 0, 6);
+}
+
+BaseTrackView[unlighted="true"] #peaksDbLabel
+{
+   border: none;
+   background-color: rgba(0, 0, 0, 10);
+}
+
+
+BaseTrackView
+{
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(247, 247, 247), stop:1 rgb(220, 220, 220));
+border: none; /*1px solid rgb(61, 61, 61);*/
+font-size: 8px;
+}
+
+
+
+/* Setting colors when the track is 'not transmiting'
+-----------------------------------------------------*/
+BaseTrackView[unlighted="true"] #panSlider::handle,         /* pan slider handle */
+BaseTrackView[unlighted="true"] QSlider::handle:vertical    /* track fader handle */
+{
+    background: rgb(180, 180, 180);
+}
+
+BaseTrackView[unlighted="true"]{
+ background:   rgb(125, 112, 84);
+}
+
+TrackGroupView[unlighted="true"] > #topPanel                /* the track group top panel: used to show user name */
+{
+background: rgb(125, 112, 84);
+}
+
+/* -----------------------------------------*/
+
+
+BaseTrackView #panSlider::handle
+{
+background-color: qlineargradient(x1:0, y1:0, x2:0, y2:0.95, stop:0 rgb(247, 247, 247), stop:1 rgb(200, 200, 200));
+border: 1px outset rgb(60, 60, 60);
+
+}
+
+BaseTrackView #panSlider::handle:hover
+{
+    background-color: rgb(247, 247, 247);
+}
+
+BaseTrackView #levelSlider::handle:hover
+{
+    background-color: rgb(247, 247, 247);
+}
+
+PeakMeter
+{
+    background-color: rgba(0, 0, 0, 6);
+    border: none;
+    min-width: 4px;
+    min-height: 4px;
+}
+
+
+/* TrackGroup - used as container for subchannels
+---------------------------------------------------*/
+
+TrackGroupView #topPanel
+{
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    stop:0 rgb(255, 255, 255),
+    stop:1 rgb(247, 247, 247));
+
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+}

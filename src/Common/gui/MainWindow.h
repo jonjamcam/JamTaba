@@ -10,7 +10,6 @@
 #include <QCameraInfo>
 #include <QVideoFrame>
 #include <QComboBox>
-#include <QFileInfo>
 
 class PreferencesDialog;
 class LocalTrackView;
@@ -86,7 +85,7 @@ public:
 
     void highlightChannelGroup(int index) const;
 
-    virtual void addChannelsGroup(int instrumentIndex);
+    virtual void addChannelsGroup(const QString &name);
     void removeChannelsGroup(int channelGroupIndex);
 
     void exitFromRoom(bool normalDisconnection, QString disconnectionMessage = "");
@@ -150,7 +149,7 @@ protected:
 
     bool eventFilter(QObject *target, QEvent *event) override;
 
-    LocalTrackGroupView *addLocalChannel(int channelGroupIndex, int instrumentIndex,
+    LocalTrackGroupView *addLocalChannel(int channelGroupIndex, const QString &channelName,
                                          bool createFirstSubchannel);
 
     // this factory method is overrided in derived classes to create more specific views
@@ -376,8 +375,6 @@ private:
     void showMessageBox(const QString &title, const QString &text, QMessageBox::Icon icon);
 
     void wireNinjamSignals();
-
-    QList<login::RoomInfo> loadPrivateServersFromJson(const QFileInfo &privateServersFile);
 
     int timerID; // timer used to refresh the entire GUI: animations, peak meters, etc
     static const quint8 DEFAULT_REFRESH_RATE;

@@ -4,7 +4,7 @@
 #include "TrackGroupView.h"
 #include "BaseTrackView.h"
 #include "widgets/IntervalChunksDisplay.h"
-
+#include "widgets/MarqueeLabel.h"
 #include "widgets/MultiStateButton.h"
 #include "persistence/UsersDataCache.h"
 #include "audio/NinjamTrackNode.h"
@@ -60,6 +60,7 @@ protected:
     void paintEvent(QPaintEvent *ev) override;
 
 private:
+    MarqueeLabel *channelNameLabel;
     MultiStateButton *buttonLowCut;
     QPushButton *buttonReceive;
     QHBoxLayout *networkUsageLayout;
@@ -88,6 +89,7 @@ private:
     void updateLowCutButtonToolTip();
     QString getLowCutStateText() const;
 
+    MarqueeLabel *createChannelNameLabel() const;
     QPushButton *createReceiveButton() const;
 
     NinjamTrackNode *getTrackNode() const;

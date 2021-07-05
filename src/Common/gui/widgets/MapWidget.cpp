@@ -358,12 +358,12 @@ void MapWidget::paintEvent(QPaintEvent *event)
     drawPlayersMarkers(p);
 
     if (blurActivated) {
-        p.fillRect(rect(), QColor(0, 0, 0, 140)); // draw a transparent black layer and create more contrast to show the sound wave
+        p.fillRect(rect(), QColor(0, 0, 0, 60)); // draw a transparent black layer and create more contrast to show the sound wave
     }
 
-    if (underMouse()) {
+/*    if (underMouse()) {
         drawCountriesLegend(p);
-    }
+    }*/
 }
 
 QList<MapMarker> MapWidget::getUniqueCountryMarkers() const
@@ -648,11 +648,11 @@ void MapWidget::drawMarker(const MapMarker &marker, QPainter &painter, const QPo
     painter.drawText(hOffset, textY, playerName);
     hOffset += playerNameWidth + TEXT_MARGIM;// * 3;
 
-    // draw the player country flag
+    /* draw the player country flag
     const QImage &image = marker.getFlag();
     qreal imageX = hOffset + TEXT_MARGIM;
     qreal imageY = markerRect.center().y() - image.height()/2.0;
-    painter.drawImage(QPointF(imageX, imageY), image);
+    painter.drawImage(QPointF(imageX, imageY), image);*/
 }
 
 void MapWidget::changeEvent(QEvent *ev)
@@ -675,12 +675,12 @@ QSizeF MapWidget::getMarkerSize(const MapMarker &marker) const
 
     QFontMetrics metrics(font());
     markerWidth += metrics.width(marker.getPlayerName());
-    markerWidth += TEXT_MARGIM; // space between player and country name
+    //markerWidth += TEXT_MARGIM; // space between player and country name
 
-    markerWidth += TEXT_MARGIM + flag.width();
+    //markerWidth += TEXT_MARGIM + flag.width();
     markerWidth += TEXT_MARGIM; // right margin
 
-    qreal markerHeight = qMax(metrics.height(), flag.height()) + TEXT_MARGIM * 2;
+    qreal markerHeight = qMax(metrics.height(), flag.height()) + TEXT_MARGIM;// * 2;
 
     return QSizeF(markerWidth, markerHeight);
 }
@@ -704,7 +704,7 @@ bool MapWidget::eventFilter(QObject *object, QEvent *ev)
             QPointF markerPosition = getMarkerScreenCoordinate(marker);
             QRectF markerRect(markerPosition.x() - 2.5, markerPosition.y() - 2.5, 5, 5);
             if (markerRect.contains(QPointF(mousePosition))) {
-                QToolTip::showText(event->globalPos(), marker.getCountryName());
+                QToolTip::showText(event->globalPos(), marker.getText());
                 return true;
             }else {
                 QToolTip::hideText();

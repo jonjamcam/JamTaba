@@ -8,6 +8,7 @@ namespace vorbis
     const float EncoderQualityLow    = -0.1f;  // ~48 – ~64 kbps
     const float EncoderQualityNormal =  0;     // ~64 – ~80 kbps.
     const float EncoderQualityHigh   =  0.3f;  // ~112 – ~128 kbps. In ogg vorbis 112 Kbps is better than 128 kbps mp3
+    const float EncoderQualityMaximum   =  0.6f;  // near lossless
 
 
 } // namespace

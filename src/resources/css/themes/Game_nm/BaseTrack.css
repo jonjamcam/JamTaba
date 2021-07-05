@@ -32,3 +32,10 @@ TrackGroupView[unlighted="true"] #topPanel
 {
     background-color: rgb(15, 29, 30);
 }
+
+/* Small Label used to show max peak below peak meters
+-------------------------------------------------------*/
+BaseTrackView #peaksDbLabel
+{
+    /* */
+}

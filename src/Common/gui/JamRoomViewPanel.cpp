@@ -3,7 +3,6 @@
 
 #include <QDebug>
 #include <QButtonGroup>
-#include <QPainter>
 
 #include "MainController.h"
 #include "ninjam/client/User.h"
@@ -129,27 +128,6 @@ void JamRoomViewPanel::updateUserLocation(const QString &userIP)
 
 }
 
-void JamRoomViewPanel::paintEvent(QPaintEvent *ev)
-{
-    QFrame::paintEvent(ev);
-
-    if (getRoomInfo().isPrivateServer()) {
-        QPainter painter(this);
-        painter.setPen(QPen(QBrush(Qt::black), 1.0));
-        painter.drawRect(0, 0, width()-1, height()-1);
-    }
-}
-
-QSize JamRoomViewPanel::sizeHint() const
-{
-    auto hint = QFrame::sizeHint();
-
-    if (roomInfo.isPrivateServer())
-        hint.setHeight(60);
-
-    return hint;
-}
-
 void JamRoomViewPanel::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange){
@@ -191,11 +169,15 @@ void JamRoomViewPanel::updateMap()
         QList<MapMarker> newMarkers;
         for (const auto &user : userInfos) {
             if (!userIsBot(user)) {
-                auto userLocation = user.getLocation();
+                //auto userLocation = user.getLocation();
+                auto userLocation = mainController->getGeoLocation(user.getIp());
 
-                QPointF latLong(userLocation.latitude, userLocation.longitude);
-                QPixmap flag(":/flags/flags/" + userLocation.countryCode.toLower() + ".png");
-                MapMarker marker(user.getName(), userLocation.countryName, latLong, flag.toImage());
+                //QPointF latLong(userLocation.latitude, userLocation.longitude);
+                //QPixmap flag(":/flags/flags/" + userLocation.countryCode.toLower() + ".png");
+                //MapMarker marker(user.getName(), userLocation.countryName, latLong, flag.toImage());
+                QPointF latLong(userLocation.getLatitude(), userLocation.getLongitude());
+                QPixmap flag(":/flags/flags/" + userLocation.getCountryCode().toLower() + ".png");
+                MapMarker marker(user.getName(), userLocation.getCountryName(), userLocation.getRegionName(), latLong, flag.toImage());
                 newMarkers.append(marker);
             }
         }
@@ -215,16 +197,13 @@ void JamRoomViewPanel::refresh(const login::RoomInfo &roomInfo)
 
     updateButtonListen();
 
-    ui->buttonEnter->setEnabled(!roomInfo.isFull());
+    ui->buttonEnter->setEnabled(true);
 
     updateMap();
 
-    setProperty("empty", roomInfo.isEmpty() && !roomInfo.isPrivateServer());
+    setProperty("empty", roomInfo.isEmpty());
 
     updateStyleSheet();
-
-    if (roomInfo.isPrivateServer())
-        ui->labelRoomStatus->setText(tr("Private Server"));
 
 }
 
@@ -290,7 +269,12 @@ bool JamRoomViewPanel::roomContainsBotsOnly(const login::RoomInfo &roomInfo)
 
 void JamRoomViewPanel::initialize(const login::RoomInfo &roomInfo)
 {
-    QString roomName = roomInfo.getName() + " (" + QString::number(roomInfo.getPort()) + ")";
+    QString roomName = roomInfo.getName();
+/*    if (roomName.endsWith(".com"))
+        roomName = roomName.replace(".com", "");*/
+
+        roomName += ":" + QString::number(roomInfo.getPort());
+
     ui->labelName->setText(roomName);
 
     refresh(roomInfo);
@@ -326,7 +310,7 @@ void JamRoomViewPanel::toggleRoomListening()
     ui->wavePeakPanel->setEnabled(listening);
     ui->wavePeakPanel->updateGeometry();
 
-    map->setBlurMode(listening); // when listening the map is drawed with a tranparent black layer in top
+    //map->setBlurMode(listening); // when listening the map is drawed with a tranparent black layer in top
 
     setWaveDrawingButtonsVisibility(listening); // when listening the buttons appears
 }

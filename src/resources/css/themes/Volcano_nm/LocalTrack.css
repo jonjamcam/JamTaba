@@ -115,6 +115,7 @@ LocalTrackView[unlighted="true"] #inputPanel:hover
 }
 
 #xmitButton[preparing="true"],
+#xmitButton[preparing="true"]:hover:checked,
 #voiceChatButton:checked[blinking="true"]
 {
     background-color: rgb(255, 255, 0);

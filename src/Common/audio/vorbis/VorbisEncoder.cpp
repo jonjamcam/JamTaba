@@ -9,7 +9,7 @@ using vorbis::Encoder;
 Encoder::Encoder()
     :initialized(false)
 {
-    init(1, 44100, vorbis::EncoderQualityNormal);
+    init(1, 44100, vorbis::EncoderQualityHigh);
 }
 
 Encoder::Encoder(uint channels, uint sampleRate, float quality):

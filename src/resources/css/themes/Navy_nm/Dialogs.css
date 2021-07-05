@@ -47,4 +47,8 @@ ChordProgressionCreationDialog QComboBox:focus
     border-radius: 3px;
 }
 
-
+PrivateServerDialog #ServerList
+{
+    border-radius: 6px;
+    background: rgb(53, 53, 53)
+}
